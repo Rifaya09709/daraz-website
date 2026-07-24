@@ -5,9 +5,11 @@ import User from "../models/User";
 
 // Generate JWT Token
 const generateToken = (userId: string) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET as string, {
-    expiresIn: process.env.JWT_EXPIRES_IN || "7d",
-  });
+ return jwt.sign(
+  { id: userId },
+  process.env.JWT_SECRET as string,
+  { expiresIn: process.env.JWT_EXPIRES_IN || "7d" } as jwt.SignOptions
+);
 };
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
