@@ -7,10 +7,14 @@ import { formatCurrency } from "../../utils/formatCurrency";
 
 interface ProductCardProps {
   product: Product;
+  /** Optional override for the card image — used by sections like
+   * "Just For You" that cycle through a fixed set of images instead of
+   * each product's own photos. Leave unset everywhere else. */
+  imageOverride?: string;
 }
 
-const ProductCard = ({ product }: ProductCardProps) => {
-  const image = getPrimaryImage(product.images);
+const ProductCard = ({ product, imageOverride }: ProductCardProps) => {
+  const image = imageOverride || getPrimaryImage(product.images);
   const finalPrice = getFinalPrice(product);
 
   return (
