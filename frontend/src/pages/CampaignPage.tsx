@@ -10,79 +10,16 @@ import { Product } from "../types/product";
 import { resolveDbCategory } from "../constants/categories";
 
 // ---------------------------------------------------------------------------
-// IMAGE POOLS
+// IMAGES
 // ---------------------------------------------------------------------------
-// Previously each `imageKeyword` mapped to a SINGLE image URL, so every
-// product card inside a category (e.g. "Makeup") showed the exact same
-// photo. Fix: each keyword now maps to a "seed" string. We generate a POOL
-// of N distinct (but category-appropriate) images from that seed, then hand
-// out a different image from the pool to each product card based on its
-// position in the grid (index % pool.length). Same category => same visual
-// style/theme, but no two products show the identical photo (until the pool
-// wraps around, which only happens if you have more products than pool size).
+// No frontend image pooling / placeholder trick anymore. Each product now
+// carries its own real, category-correct image in `product.images` — set
+// once via the `seedProductImages.ts` script (Unsplash API, per category).
+// If a product genuinely has no image, we fall back to a plain placeholder
+// so the layout doesn't break.
 // ---------------------------------------------------------------------------
-
-const CATEGORY_IMAGE_SEEDS: Record<string, string> = {
-  "delivery,truck": "delivery-truck",
-  "fashion,clothing": "fashion-clothing",
-  "electronics,gadget": "electronics-gadget",
-  "grocery,products": "grocery-products",
-  "lifestyle,home": "lifestyle-home",
-  "kitchen,cookware": "kitchen-cookware",
-  "tools,hardware": "tools-hardware",
-  "gift,shopping": "gift-shopping",
-  "beauty,skincare": "beauty-skincare",
-  "gift,box": "gift-box",
-  "cosmetics,sample": "cosmetics-sample",
-  "wheel,prize": "wheel-prize",
-  "friends,invite": "friends-invite",
-  "smartphone,mobile": "smartphone-mobile",
-  "headphones,accessories": "headphones-accessories",
-  "smartwatch,wearable": "smartwatch-wearable",
-  "recycle,phone": "recycle-phone",
-  "laptop,electronics": "laptop-electronics",
-  "dress,fashion": "dress-fashion",
-  "makeup,beauty": "makeup-beauty",
-  "home,decor": "home-decor",
-  "skincare,serum": "skincare-serum",
-  "makeup,lipstick": "makeup-lipstick",
-  "haircare,shampoo": "haircare-shampoo",
-  "perfume,fragrance": "perfume-fragrance",
-  "new,arrival": "new-arrival",
-  "camera,gadget": "camera-gadget",
-  "candle,decor": "candle-decor",
-  "women,dress": "women-dress",
-  "men,shirt": "men-shirt",
-  "kids,clothing": "kids-clothing",
-  "handbag,accessories": "handbag-accessories",
-  "livestream,shopping": "livestream-shopping",
-  "auction,gavel": "auction-gavel",
-  "sale,discount": "sale-discount",
-  "group,people": "group-people",
-};
 
 const FALLBACK_IMAGE = "https://placehold.co/400x400?text=No+Image";
-const POOL_SIZE = 30; // how many distinct images to generate per category
-
-/**
- * Generates a pool of `count` visually-distinct-but-thematically-consistent
- * image URLs for a given seed. Swap the URL builder below for your real
- * image source (Cloudinary folder, product image array from DB, curated
- * Unsplash list, etc.) whenever you move off placeholder images.
- */
-function getCategoryImagePool(seed: string, count: number = POOL_SIZE): string[] {
-  return Array.from({ length: count }, (_, i) => `https://picsum.photos/seed/${seed}-${i}/500/500`);
-}
-
-// Simple in-memory cache so we don't regenerate the same pool array on every
-// render (keeps the array reference stable across re-renders too).
-const poolCache = new Map<string, string[]>();
-function getCachedImagePool(seed: string): string[] {
-  if (!poolCache.has(seed)) {
-    poolCache.set(seed, getCategoryImagePool(seed));
-  }
-  return poolCache.get(seed)!;
-}
 
 const themeClasses: Record<
   string,
@@ -160,12 +97,6 @@ const CampaignPage = () => {
   }
 
   const t = themeClasses[config.themeColor] ?? themeClasses.slate;
-
-  // Look up the seed for whichever category chip is selected, then build
-  // (or fetch from cache) a pool of distinct images for that category.
-  const activeCategoryConfig = config.categories.find((c) => c.label === selectedCategory);
-  const activeSeed = activeCategoryConfig ? CATEGORY_IMAGE_SEEDS[activeCategoryConfig.imageKeyword] : undefined;
-  const imagePool = activeSeed ? getCachedImagePool(activeSeed) : [];
 
   return (
     <div className="max-w-2xl mx-auto pb-16 bg-gray-50 min-h-screen">
@@ -284,49 +215,40 @@ const CampaignPage = () => {
             No products found for {selectedCategory}.
           </p>
         ) : (
-          products.map((p, index) => {
-            // Each product gets a DIFFERENT image from the category's pool,
-            // based on its position in the grid. Falls back to the product's
-            // own image, then to the generic placeholder, if no pool exists
-            // for this category (e.g. promo-only tabs with no imageKeyword).
-            const poolImage = imagePool.length > 0 ? imagePool[index % imagePool.length] : undefined;
-            const imageSrc = poolImage || getPrimaryImage(p.images) || FALLBACK_IMAGE;
-
-            return (
-              <Link
-                key={p._id}
-                to={`/product/${p._id}`}
-                className="bg-white rounded-lg overflow-hidden border hover:shadow-md transition-shadow"
-              >
-                <div className="relative">
-                  <img
-                    src={imageSrc}
-                    alt={p.name}
-                    loading="lazy"
-                    className="w-full aspect-square object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = FALLBACK_IMAGE;
-                    }}
-                  />
-                  {p.isFlashSale && (
-                    <span className={`absolute top-1.5 left-1.5 ${t.heroBg} text-white text-[10px] font-bold px-1.5 py-0.5 rounded`}>
-                      SALE
-                    </span>
-                  )}
-                </div>
-                <div className="p-2.5">
-                  <p className="text-sm font-semibold text-gray-900">
-                    {formatCurrency(getFinalPrice(p))}
+          products.map((p) => (
+            <Link
+              key={p._id}
+              to={`/product/${p._id}`}
+              className="bg-white rounded-lg overflow-hidden border hover:shadow-md transition-shadow"
+            >
+              <div className="relative">
+                <img
+                  src={getPrimaryImage(p.images) || FALLBACK_IMAGE}
+                  alt={p.name}
+                  loading="lazy"
+                  className="w-full aspect-square object-cover"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = FALLBACK_IMAGE;
+                  }}
+                />
+                {p.isFlashSale && (
+                  <span className={`absolute top-1.5 left-1.5 ${t.heroBg} text-white text-[10px] font-bold px-1.5 py-0.5 rounded`}>
+                    SALE
+                  </span>
+                )}
+              </div>
+              <div className="p-2.5">
+                <p className="text-sm font-semibold text-gray-900">
+                  {formatCurrency(getFinalPrice(p))}
+                </p>
+                {p.discountPrice && (
+                  <p className="text-xs text-gray-400 line-through">
+                    {formatCurrency(p.price)}
                   </p>
-                  {p.discountPrice && (
-                    <p className="text-xs text-gray-400 line-through">
-                      {formatCurrency(p.price)}
-                    </p>
-                  )}
-                </div>
-              </Link>
-            );
-          })
+                )}
+              </div>
+            </Link>
+          ))
         )}
       </div>
     </div>
