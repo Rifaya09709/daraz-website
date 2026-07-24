@@ -1,0 +1,5 @@
+[33mf9676a7[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Allow frontend and admin Render URLs in CORS
+[33mad0ee6b[m update
+[33m96ef653[m Skip strict type check in admin build
+[33m718dcdb[m Fix Sitemap import casing
+[33macfca51[m Skip strict type check in build for deploy

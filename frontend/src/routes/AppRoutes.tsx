@@ -43,6 +43,8 @@ import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
 import BottomNav from "../components/layout/BottomNav";
 import Account from "../pages/Account";
+import ChannelsPage from "../pages/ChannelsPage";
+import Channels from "../pages/Channels";
 
 const AppRoutes = () => {
   return (
@@ -74,6 +76,8 @@ const AppRoutes = () => {
         <Route path="/messages/activities" element={<ActivitiesPage />} />
         <Route path="/messages/promos" element={<PromosPage />} />
         <Route path="/campaign/:slug" element={<CampaignPage />} />
+        <Route path="/channelsPage" element={<ChannelsPage />} />
+        <Route path="/channels" element={<Channels />} />
 
         <Route path="/about" element={<AboutUs />} />
         <Route path="/help" element={<HelpCenter />} />
