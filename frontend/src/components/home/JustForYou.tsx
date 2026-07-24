@@ -13,6 +13,31 @@ const JUST_FOR_YOU_IMAGES = [
   "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500&q=80", // dress / fashion
   "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&q=80", // phone
   "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80", // headphones
+  "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80", // sneakers
+  "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500&q=80", // watch
+  "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&q=80", // backpack
+  "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&q=80", // sunglasses
+  "https://images.unsplash.com/photo-1526406915894-7bcd65f60845?w=500&q=80", // camera
+  "https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=500&q=80", // handbag
+  "https://images.unsplash.com/photo-1560343090-f0409e92791a?w=500&q=80", // desk lamp
+  "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80", // coffee maker
+  "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500&q=80", // keyboard
+  "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=500&q=80", // sunglasses alt
+  "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=500&q=80", // shoes
+  "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=500&q=80", // smartwatch
+  "https://images.unsplash.com/photo-1587145820266-a5951ee6f620?w=500&q=80", // t-shirt
+  "https://images.unsplash.com/photo-1542272604-787c3835535d?w=500&q=80", // wireless earbuds
+  "https://images.unsplash.com/photo-1524498658760-59f2528bee0e?w=500&q=80", // chair
+  "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=500&q=80", // perfume bottle
+  "https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=500&q=80", // sneaker alt
+  "https://images.unsplash.com/photo-1512499617640-c74ae3a79d37?w=500&q=80", // makeup
+  "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&q=80", // gaming console
+  "https://images.unsplash.com/photo-1591370874773-6702e8f12fd8?w=500&q=80", // wallet
+  "https://images.unsplash.com/photo-1543512214-318c7553f230?w=500&q=80", // sports shoes
+  "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=500&q=80", // mouse
+  "https://images.unsplash.com/photo-1608667508764-33cf0726b13a?w=500&q=80", // ring / jewelry
+  "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=500&q=80", // blender
+  "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500&q=80", // jacket
 ];
 
 const JustForYou = () => {
