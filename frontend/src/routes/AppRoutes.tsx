@@ -32,7 +32,7 @@ import ShippingInfo from "../pages/ShippingInfo";
 import WarrantyPolicy from "../pages/WarrantyPolicy";
 import Careers from "../pages/Careers";
 import PressCenter from "../pages/PressCenter";
-import Sitemap from "../pages/Sitemap";
+import SiteMap from "../pages/SiteMap";
 import Affiliate from "../pages/Affiliate";
 import ComingSoon from "../pages/ComingSoon";
 import PickupPoints from "../pages/PickupPoints";
@@ -86,7 +86,7 @@ const AppRoutes = () => {
         <Route path="/warranty" element={<WarrantyPolicy />} />
         <Route path="/careers" element={<Careers />} />
         <Route path="/press" element={<PressCenter />} />
-        <Route path="/sitemap" element={<Sitemap />} />
+        <Route path="/siteMap" element={<SiteMap />} />
         <Route path="/affiliate" element={<Affiliate />} />
         <Route path="/seller/register" element={<ComingSoon />} />
         <Route path="/seller/dashboard" element={<ComingSoon />} />
