@@ -37,8 +37,11 @@ const httpServer = createServer(app);
 // port (5173, 5174, 5175, 5176...) when one is busy, so hardcoding a
 // fixed list breaks every time a new dev server grabs a different port.
 const isAllowedOrigin = (origin: string | undefined) => {
-  if (!origin) return true; // non-browser requests (curl, mobile apps)
-  return /^http:\/\/localhost:\d+$/.test(origin);
+  if (!origin) return true; // non-browser requests
+  if (/^http:\/\/localhost:\d+$/.test(origin)) return true; // local dev
+  if (origin === "https://daraz-website-1.onrender.com") return true; // frontend
+  if (origin === "https://daraz-website-2.onrender.com") return true; // admin (verify exact URL)
+  return false;
 };
 
 const corsOptions = {
