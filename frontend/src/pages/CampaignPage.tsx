@@ -9,6 +9,51 @@ import { getCategoryIcon } from "../utils/categoryIcons";
 import { Product } from "../types/product";
 import { resolveDbCategory } from "../constants/categories";
 
+// Maps every `imageKeyword` used across campaigns.data.ts to an image that
+// actually matches the category, so tapping "Women" shows dresses, "Men"
+// shows menswear, "Gadgets" shows gadgets, etc. — instead of whatever
+// unrelated photo happened to be on the product record.
+const CATEGORY_IMAGES: Record<string, string> = {
+  "delivery,truck": "https://images.unsplash.com/photo-1601591356789-ba8dfa8e9b3d?w=500&q=80",
+  "fashion,clothing": "https://images.unsplash.com/photo-1445205170230-053b83016050?w=500&q=80",
+  "electronics,gadget": "https://images.unsplash.com/photo-1550009158-9ebf69173e03?w=500&q=80",
+  "grocery,products": "https://images.unsplash.com/photo-1542838132-92c53300491e?w=500&q=80",
+  "lifestyle,home": "https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=500&q=80",
+  "kitchen,cookware": "https://images.unsplash.com/photo-1584990347449-a5d9f800a783?w=500&q=80",
+  "tools,hardware": "https://images.unsplash.com/photo-1581147036324-c1c89c2c8b5c?w=500&q=80",
+  "gift,shopping": "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=500&q=80",
+  "beauty,skincare": "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=500&q=80",
+  "gift,box": "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=500&q=80",
+  "cosmetics,sample": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=500&q=80",
+  "wheel,prize": "https://images.unsplash.com/photo-1518481852452-9415b262eba4?w=500&q=80",
+  "friends,invite": "https://images.unsplash.com/photo-1543269865-cbf427effbad?w=500&q=80",
+  "smartphone,mobile": "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&q=80",
+  "headphones,accessories": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80",
+  "smartwatch,wearable": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?w=500&q=80",
+  "recycle,phone": "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=500&q=80",
+  "laptop,electronics": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500&q=80",
+  "dress,fashion": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500&q=80",
+  "makeup,beauty": "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=500&q=80",
+  "home,decor": "https://images.unsplash.com/photo-1513161455079-7dc1de15ef3e?w=500&q=80",
+  "skincare,serum": "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=500&q=80",
+  "makeup,lipstick": "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=500&q=80",
+  "haircare,shampoo": "https://images.unsplash.com/photo-1526947425960-945c6e72858f?w=500&q=80",
+  "perfume,fragrance": "https://images.unsplash.com/photo-1541643600914-78b084683601?w=500&q=80",
+  "new,arrival": "https://images.unsplash.com/photo-1607082349566-187342175e2f?w=500&q=80",
+  "camera,gadget": "https://images.unsplash.com/photo-1526406915894-7bcd65f60845?w=500&q=80",
+  "candle,decor": "https://images.unsplash.com/photo-1602874801007-bd458bb1b8b6?w=500&q=80",
+  "women,dress": "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500&q=80",
+  "men,shirt": "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=500&q=80",
+  "kids,clothing": "https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=500&q=80",
+  "handbag,accessories": "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=500&q=80",
+  "livestream,shopping": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=500&q=80",
+  "auction,gavel": "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=500&q=80",
+  "sale,discount": "https://images.unsplash.com/photo-1607083206968-13611e3d76db?w=500&q=80",
+  "group,people": "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=500&q=80",
+};
+
+const FALLBACK_IMAGE = "https://placehold.co/400x400?text=No+Image";
+
 const themeClasses: Record<
   string,
   { heroBg: string; chipBg: string; chipText: string; tabActiveBg: string; voucherAccent: string }
@@ -85,6 +130,13 @@ const CampaignPage = () => {
   }
 
   const t = themeClasses[config.themeColor] ?? themeClasses.slate;
+
+  // Look up the image that matches whichever category chip is selected —
+  // falls back to each product's own image if the keyword isn't mapped.
+  const activeCategoryConfig = config.categories.find((c) => c.label === selectedCategory);
+  const categoryImage = activeCategoryConfig
+    ? CATEGORY_IMAGES[activeCategoryConfig.imageKeyword]
+    : undefined;
 
   return (
     <div className="max-w-2xl mx-auto pb-16 bg-gray-50 min-h-screen">
@@ -211,13 +263,12 @@ const CampaignPage = () => {
             >
               <div className="relative">
                 <img
-                  src={getPrimaryImage(p.images)}
+                  src={categoryImage || getPrimaryImage(p.images)}
                   alt={p.name}
                   loading="lazy"
                   className="w-full aspect-square object-cover"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).src =
-                      "https://placehold.co/400x400?text=No+Image";
+                    (e.target as HTMLImageElement).src = FALLBACK_IMAGE;
                   }}
                 />
                 {p.isFlashSale && (
