@@ -71,7 +71,12 @@ const Products = () => {
   const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
   const [selectedCapacities, setSelectedCapacities] = useState<string[]>([]);
   const [selectedWarrantyPeriods, setSelectedWarrantyPeriods] = useState<string[]>([]);
-  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+
+  // Replaces hover-based flyout: tracks which category is expanded (click, not hover)
+  const [openCategory, setOpenCategory] = useState<string | null>(null);
+
+  // Controls the mobile filter drawer visibility
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   const subCategoriesForCategory = CATEGORY_SUBCATEGORIES[category] || [];
 
@@ -108,6 +113,14 @@ const Products = () => {
     selectedWarrantyPeriods,
   ]);
 
+  // Lock body scroll while the mobile drawer is open
+  useEffect(() => {
+    document.body.style.overflow = showMobileFilters ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showMobileFilters]);
+
   const handleSearch = () => {
     const params: Record<string, string> = { page: "1" };
     if (search.trim()) params.search = search.trim();
@@ -121,6 +134,15 @@ const Products = () => {
     if (search.trim()) params.search = search.trim();
     if (cat !== "All") params.category = cat;
     setSearchParams(params);
+
+    // Tapping a category selects it AND expands/collapses its subcategories.
+    // This replaces hover, which has no equivalent on touch devices.
+    const subCats = CATEGORY_SUBCATEGORIES[cat] || [];
+    if (subCats.length > 0) {
+      setOpenCategory((prev) => (prev === cat ? null : cat));
+    } else {
+      setOpenCategory(null);
+    }
   };
 
   const handleCategorySubCategoryClick = (cat: string, subCat: string) => {
@@ -129,6 +151,8 @@ const Products = () => {
     if (cat !== "All") params.category = cat;
     params.subCategory = subCat;
     setSearchParams(params);
+    // Keep drawer open on desktop, close it on mobile after a selection
+    setShowMobileFilters(false);
   };
 
   const handlePageChange = (newPage: number) => {
@@ -165,146 +189,234 @@ const Products = () => {
       ? `Showing results for ${[category, subCategory].filter(Boolean).join(", ")}`
       : null;
 
+  // Count active filters for the mobile "Filters" button badge
+  const activeFilterCount =
+    (minPrice ? 1 : 0) +
+    (maxPrice ? 1 : 0) +
+    (selectedRating ? 1 : 0) +
+    selectedWarranty.length +
+    selectedColors.length +
+    selectedMaterials.length +
+    selectedCapacities.length +
+    selectedWarrantyPeriods.length +
+    (category !== "All" ? 1 : 0);
+
+  const sidebarContent = (
+    <>
+      <div className="flex">
+        <input
+          type="text"
+          placeholder="Search Product..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+          className="w-full border rounded-l-lg p-3 outline-none"
+        />
+        <button onClick={handleSearch} className="bg-primary text-white px-4 rounded-r-lg">
+          Go
+        </button>
+      </div>
+
+      {/* Category list — click-to-expand accordion (no hover dependency) */}
+      <div>
+        <h3 className="font-bold mb-3 text-sm">Category</h3>
+        <div className="space-y-1">
+          {CATEGORY_LABELS.map((cat) => {
+            const subCats = CATEGORY_SUBCATEGORIES[cat] || [];
+            const isOpen = openCategory === cat;
+            return (
+              <div key={cat} className="rounded-lg overflow-hidden">
+                <button
+                  onClick={() => handleCategoryClick(cat)}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm ${
+                    category === cat
+                      ? "text-primary font-semibold bg-secondary"
+                      : "text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  <span>{cat}</span>
+                  {subCats.length > 0 && (
+                    <span
+                      className={`text-xs text-gray-400 transition-transform duration-200 ${
+                        isOpen ? "rotate-90" : ""
+                      }`}
+                    >
+                      ›
+                    </span>
+                  )}
+                </button>
+
+                {subCats.length > 0 && (
+                  <div
+                    className={`bg-gray-50 rounded-lg transition-all duration-200 overflow-hidden ${
+                      isOpen ? "max-h-96 py-1 mt-1" : "max-h-0"
+                    }`}
+                  >
+                    {subCats.map((subCat) => (
+                      <button
+                        key={subCat}
+                        onClick={() => handleCategorySubCategoryClick(cat, subCat)}
+                        className={`block w-full text-left px-4 py-2 text-sm ${
+                          category === cat && subCategory === subCat
+                            ? "text-primary font-semibold bg-secondary"
+                            : "text-gray-600 hover:bg-gray-100"
+                        }`}
+                      >
+                        {subCat}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="border-t pt-4">
+        <h3 className="font-bold mb-3 text-sm">Price</h3>
+        <div className="flex items-center gap-2">
+          <input
+            type="number"
+            placeholder="Min"
+            value={minPrice}
+            onChange={(e) => setMinPrice(e.target.value)}
+            className="w-full border rounded-lg px-2 py-2 text-sm outline-none"
+          />
+          <span className="text-gray-400">-</span>
+          <input
+            type="number"
+            placeholder="Max"
+            value={maxPrice}
+            onChange={(e) => setMaxPrice(e.target.value)}
+            className="w-full border rounded-lg px-2 py-2 text-sm outline-none"
+          />
+        </div>
+      </div>
+
+      <div className="border-t pt-4">
+        <h3 className="font-bold mb-3 text-sm">Rating</h3>
+        <div className="space-y-2">
+          {[4, 3, 2, 1].map((r) => (
+            <label key={r} className="flex items-center gap-2 text-sm cursor-pointer">
+              <input
+                type="radio"
+                name="rating"
+                checked={selectedRating === r}
+                onChange={() => setSelectedRating(r)}
+              />
+              <span className="flex text-yellow-400">
+                {"★".repeat(r)}
+                <span className="text-gray-300">{"★".repeat(5 - r)}</span>
+              </span>
+              <span className="text-gray-500">And Up</span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <FilterCheckboxGroup
+        title="Color Family"
+        options={COLOR_OPTIONS}
+        selected={selectedColors}
+        onChange={(v, c) => toggleFromList(v, c, setSelectedColors)}
+      />
+
+      <FilterCheckboxGroup
+        title="Material"
+        options={MATERIAL_OPTIONS}
+        selected={selectedMaterials}
+        onChange={(v, c) => toggleFromList(v, c, setSelectedMaterials)}
+      />
+
+      <FilterCheckboxGroup
+        title="Capacity / Size"
+        options={CAPACITY_OPTIONS}
+        selected={selectedCapacities}
+        onChange={(v, c) => toggleFromList(v, c, setSelectedCapacities)}
+      />
+
+      <FilterCheckboxGroup
+        title="Warranty Period"
+        options={WARRANTY_PERIOD_OPTIONS}
+        selected={selectedWarrantyPeriods}
+        onChange={(v, c) => toggleFromList(v, c, setSelectedWarrantyPeriods)}
+      />
+
+      <button onClick={clearFilters} className="text-sm text-primary underline">
+        Clear filters
+      </button>
+    </>
+  );
+
   return (
     <div className="max-w-7xl mx-auto px-5 py-10">
+      {/* Mobile-only "Filters" trigger */}
+      <button
+        onClick={() => setShowMobileFilters(true)}
+        className="lg:hidden w-full mb-5 flex items-center justify-center gap-2 border rounded-lg py-3 text-sm font-semibold text-gray-700"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+          <line x1="4" y1="6" x2="20" y2="6" />
+          <line x1="4" y1="12" x2="20" y2="12" />
+          <line x1="4" y1="18" x2="20" y2="18" />
+          <circle cx="9" cy="6" r="1.6" fill="currentColor" />
+          <circle cx="16" cy="12" r="1.6" fill="currentColor" />
+          <circle cx="11" cy="18" r="1.6" fill="currentColor" />
+        </svg>
+        Filters
+        {activeFilterCount > 0 && (
+          <span className="bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+            {activeFilterCount}
+          </span>
+        )}
+      </button>
+
       <div className="grid lg:grid-cols-4 gap-8">
-        {/* Sidebar */}
-        <div className="space-y-6">
-          <div className="flex">
-            <input
-              type="text"
-              placeholder="Search Product..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              className="w-full border rounded-l-lg p-3 outline-none"
-            />
-            <button onClick={handleSearch} className="bg-primary text-white px-4 rounded-r-lg">
-              Go
+        {/* Desktop sidebar — plain static column, no drawer chrome */}
+        <div className="hidden lg:block space-y-6">{sidebarContent}</div>
+
+        {/* Mobile drawer overlay */}
+        {showMobileFilters && (
+          <div
+            className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+            onClick={() => setShowMobileFilters(false)}
+          />
+        )}
+
+        {/* Mobile drawer panel */}
+        <div
+          className={`fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white z-50 overflow-y-auto transition-transform duration-300 lg:hidden ${
+            showMobileFilters ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          <div className="flex items-center justify-between px-5 py-4 border-b sticky top-0 bg-white z-10">
+            <h2 className="font-bold text-base">Filters</h2>
+            <button
+              onClick={() => setShowMobileFilters(false)}
+              className="text-2xl leading-none text-gray-400"
+              aria-label="Close filters"
+            >
+              ✕
             </button>
           </div>
 
-          {/* Category list with hover flyout */}
-          <div>
-            <h3 className="font-bold mb-3 text-sm">Category</h3>
-            <div className="space-y-1">
-              {CATEGORY_LABELS.map((cat) => {
-                const subCats = CATEGORY_SUBCATEGORIES[cat] || [];
-                return (
-                  <div
-                    key={cat}
-                    className="relative"
-                    onMouseEnter={() => setHoveredCategory(cat)}
-                    onMouseLeave={() => setHoveredCategory(null)}
-                  >
-                    <button
-                      onClick={() => handleCategoryClick(cat)}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm ${
-                        category === cat
-                          ? "text-primary font-semibold bg-secondary"
-                          : "text-gray-700 hover:bg-gray-50"
-                      }`}
-                    >
-                      <span>{cat}</span>
-                      {subCats.length > 0 && <span className="text-xs text-gray-400">›</span>}
-                    </button>
+          <div className="px-5 py-5 space-y-6 pb-24">{sidebarContent}</div>
 
-                    {subCats.length > 0 && hoveredCategory === cat && (
-                      <div className="absolute top-0 left-full ml-1 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50 py-2">
-                        {subCats.map((subCat) => (
-                          <button
-                            key={subCat}
-                            onClick={() => handleCategorySubCategoryClick(cat, subCat)}
-                            className={`block w-full text-left px-4 py-2 text-sm ${
-                              category === cat && subCategory === subCat
-                                ? "text-primary font-semibold bg-secondary"
-                                : "text-gray-600 hover:bg-gray-50"
-                            }`}
-                          >
-                            {subCat}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+          <div className="fixed bottom-0 right-0 w-[85%] max-w-sm bg-white border-t px-5 py-3 flex gap-3">
+            <button
+              onClick={clearFilters}
+              className="flex-1 border rounded-lg py-2.5 text-sm font-semibold text-gray-700"
+            >
+              Reset
+            </button>
+            <button
+              onClick={() => setShowMobileFilters(false)}
+              className="flex-1 bg-primary text-white rounded-lg py-2.5 text-sm font-semibold"
+            >
+              Apply
+            </button>
           </div>
-
-          <div className="border-t pt-4">
-            <h3 className="font-bold mb-3 text-sm">Price</h3>
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                placeholder="Min"
-                value={minPrice}
-                onChange={(e) => setMinPrice(e.target.value)}
-                className="w-full border rounded-lg px-2 py-2 text-sm outline-none"
-              />
-              <span className="text-gray-400">-</span>
-              <input
-                type="number"
-                placeholder="Max"
-                value={maxPrice}
-                onChange={(e) => setMaxPrice(e.target.value)}
-                className="w-full border rounded-lg px-2 py-2 text-sm outline-none"
-              />
-            </div>
-          </div>
-
-          <div className="border-t pt-4">
-            <h3 className="font-bold mb-3 text-sm">Rating</h3>
-            <div className="space-y-2">
-              {[4, 3, 2, 1].map((r) => (
-                <label key={r} className="flex items-center gap-2 text-sm cursor-pointer">
-                  <input
-                    type="radio"
-                    name="rating"
-                    checked={selectedRating === r}
-                    onChange={() => setSelectedRating(r)}
-                  />
-                  <span className="flex text-yellow-400">
-                    {"★".repeat(r)}
-                    <span className="text-gray-300">{"★".repeat(5 - r)}</span>
-                  </span>
-                  <span className="text-gray-500">And Up</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <FilterCheckboxGroup
-            title="Color Family"
-            options={COLOR_OPTIONS}
-            selected={selectedColors}
-            onChange={(v, c) => toggleFromList(v, c, setSelectedColors)}
-          />
-
-          <FilterCheckboxGroup
-            title="Material"
-            options={MATERIAL_OPTIONS}
-            selected={selectedMaterials}
-            onChange={(v, c) => toggleFromList(v, c, setSelectedMaterials)}
-          />
-
-          <FilterCheckboxGroup
-            title="Capacity / Size"
-            options={CAPACITY_OPTIONS}
-            selected={selectedCapacities}
-            onChange={(v, c) => toggleFromList(v, c, setSelectedCapacities)}
-          />
-
-          <FilterCheckboxGroup
-            title="Warranty Period"
-            options={WARRANTY_PERIOD_OPTIONS}
-            selected={selectedWarrantyPeriods}
-            onChange={(v, c) => toggleFromList(v, c, setSelectedWarrantyPeriods)}
-          />
-
-          <button onClick={clearFilters} className="text-sm text-primary underline">
-            Clear filters
-          </button>
         </div>
 
         {/* Products */}
