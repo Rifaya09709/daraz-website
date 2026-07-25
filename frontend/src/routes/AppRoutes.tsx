@@ -47,7 +47,7 @@ import BottomNav from "../components/layout/BottomNav";
 import Account from "../pages/Account";
 import ChannelsPage from "../pages/ChannelsPage";
 import Channels from "../pages/Channels";
-import OfficialMobilePage from "./pages/campaigns/OfficialMobilePage";
+import OfficialMobilePage from "../pages/campaigns/OfficialMobilePage";
 // ...your other page imports
 
 const AppRoutes = () => {
