@@ -38,6 +38,8 @@ import ComingSoon from "../pages/ComingSoon";
 import PickupPoints from "../pages/PickupPoints";
 import Reviews from "../pages/Reviews";
 import PaymentOptions from "../pages/PaymentOptions";
+import FreeDeliveryPage from "../pages/campaigns/FreeDeliveryPage";
+import LowPricePage from "../pages/campaigns/LowPricePage";
 
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
@@ -45,6 +47,8 @@ import BottomNav from "../components/layout/BottomNav";
 import Account from "../pages/Account";
 import ChannelsPage from "../pages/ChannelsPage";
 import Channels from "../pages/Channels";
+import OfficialMobilePage from "./pages/campaigns/OfficialMobilePage";
+// ...your other page imports
 
 const AppRoutes = () => {
   return (
@@ -75,7 +79,9 @@ const AppRoutes = () => {
         <Route path="/messages/chats/:id" element={<ChatsPage />} />
         <Route path="/messages/activities" element={<ActivitiesPage />} />
         <Route path="/messages/promos" element={<PromosPage />} />
-        <Route path="/campaign/:slug" element={<CampaignPage />} />
+        <Route path="/campaigns/free-delivery" element={<FreeDeliveryPage />} />
+        <Route path="/campaign/low-price" element={<LowPricePage />} />
+            <Route path="/campaign/mobiles" element={<OfficialMobilePage />} />
         <Route path="/channelsPage" element={<ChannelsPage />} />
         <Route path="/channels" element={<Channels />} />
 

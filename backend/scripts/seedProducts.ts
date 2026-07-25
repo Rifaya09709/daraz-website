@@ -22,11 +22,27 @@ interface SubCategoryConfig {
   featuresPool: string[]; // random "Key Features" picked per product
 }
 
+/**
+ * ⚠️ category / subCategory values below have been remapped (26/07) to match
+ * the 12-category taxonomy in src/config/categories.ts. Every entry now uses
+ * an EXACT `category` string and an EXACT `subCategory` string that exists in
+ * CATEGORY_SUBCATEGORIES for that category — cross-checked against
+ * SUBCATEGORY_CHILDREN so the product's implied "child" (e.g. Lipstick ->
+ * Makeup -> Lips) is a real leaf in that taxonomy too. None of the old
+ * category names (Beauty & Makeup, Personal Care, Home & Kitchen, Home
+ * Essentials, Mobiles, Laptops, Furniture, Kids, Jewellery, Health, Baby,
+ * Gaming, Bike, Jeep, Motorcycle, Electronics, Fashion) are used anymore —
+ * those don't exist in the new taxonomy.
+ *
+ * Where a bucket had mixed items that don't cleanly map to one subCategory
+ * (e.g. old "Sports"/"Electronics Accessories"/"Baby Products"), the closest
+ * single matching subCategory was chosen and noted inline.
+ */
 const subCategoryConfigs: SubCategoryConfig[] = [
   // ===== MAKEUP =====
   {
-    category: "Beauty & Makeup",
-    subCategory: "Lipstick",
+    category: "Health & Beauty",
+    subCategory: "Makeup", // child: Lips
     searchQuery: "lipstick makeup cosmetics",
     brands: ["Lakme", "Maybelline", "Nykaa", "MAC", "LOreal", "Sugar"],
     nameTemplates: [
@@ -46,8 +62,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
     ],
   },
   {
-    category: "Beauty & Makeup",
-    subCategory: "Foundation",
+    category: "Health & Beauty",
+    subCategory: "Makeup", // child: Face
     searchQuery: "foundation makeup base",
     brands: ["Lakme", "Maybelline", "MAC", "LOreal", "Revlon"],
     nameTemplates: [
@@ -66,8 +82,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
     ],
   },
   {
-    category: "Beauty & Makeup",
-    subCategory: "Makeup Brush",
+    category: "Health & Beauty",
+    subCategory: "Makeup", // child: Makeup Accessories
     searchQuery: "makeup brush set cosmetics",
     brands: ["Sigma", "Real Techniques", "Nykaa", "Faces Canada", "MAC"],
     nameTemplates: [
@@ -88,8 +104,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== PERSONAL CARE =====
   {
-    category: "Personal Care",
-    subCategory: "Toothpaste",
+    category: "Health & Beauty",
+    subCategory: "Personal Care", // child: Oral Care
     searchQuery: "toothpaste oral care",
     brands: ["Colgate", "Sensodyne", "Pepsodent", "Close Up", "Patanjali"],
     nameTemplates: [
@@ -108,8 +124,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
     ],
   },
   {
-    category: "Personal Care",
-    subCategory: "Soap",
+    category: "Health & Beauty",
+    subCategory: "Bath & Body", // child: Body Soaps & Shower Gels
     searchQuery: "bathing soap bar",
     brands: ["Dove", "Lux", "Pears", "Lifebuoy", "Santoor", "Medimix"],
     nameTemplates: [
@@ -128,8 +144,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
     ],
   },
   {
-    category: "Personal Care",
-    subCategory: "Shampoo",
+    category: "Health & Beauty",
+    subCategory: "Hair Care", // child: Shampoo & Conditioner
     searchQuery: "shampoo haircare bottle",
     brands: ["Head & Shoulders", "Dove", "Sunsilk", "Clinic Plus", "Tresemme", "Pantene"],
     nameTemplates: [
@@ -148,8 +164,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
     ],
   },
   {
-    category: "Personal Care",
-    subCategory: "Toothbrush",
+    category: "Health & Beauty",
+    subCategory: "Personal Care", // child: Oral Care
     searchQuery: "toothbrush oral care",
     brands: ["Colgate", "Oral-B", "Sensodyne", "Patanjali"],
     nameTemplates: [
@@ -170,8 +186,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== SNACKS =====
   {
-    category: "Groceries",
-    subCategory: "Biscuits",
+    category: "Groceries & Pets",
+    subCategory: "Breakfast, Choco & Snacks",
     searchQuery: "biscuits cookies snack",
     brands: ["Britannia", "Parle", "Sunfeast", "Oreo", "McVities"],
     nameTemplates: [
@@ -190,8 +206,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
     ],
   },
   {
-    category: "Groceries",
-    subCategory: "Chocolate",
+    category: "Groceries & Pets",
+    subCategory: "Breakfast, Choco & Snacks",
     searchQuery: "chocolate bar sweet",
     brands: ["Cadbury", "Nestle", "Amul", "Ferrero", "Hershey's"],
     nameTemplates: [
@@ -212,8 +228,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== KITCHEN VESSELS =====
   {
-    category: "Home & Kitchen",
-    subCategory: "Cooking Vessels",
+    category: "TV & Home Appliances",
+    subCategory: "Kitchen Appliances", // child: Specialty Cookware
     searchQuery: "kitchen cookware steel utensils",
     brands: ["Prestige", "Hawkins", "Pigeon", "Wonderchef", "Vinod"],
     nameTemplates: [
@@ -232,8 +248,9 @@ const subCategoryConfigs: SubCategoryConfig[] = [
     ],
   },
   {
-    category: "Home & Kitchen",
-    subCategory: "Dinner Sets",
+    // ⚠️ RECHECK — taxonomy has no dedicated "dinnerware" leaf; closest bucket used
+    category: "TV & Home Appliances",
+    subCategory: "Kitchen Appliances",
     searchQuery: "dinner set plates bowls",
     brands: ["Corelle", "Cello", "Larah", "Servewell", "Borosil"],
     nameTemplates: [
@@ -252,8 +269,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
     ],
   },
   {
-    category: "Home & Kitchen",
-    subCategory: "Storage Containers",
+    category: "TV & Home Appliances",
+    subCategory: "Kitchen Appliances",
     searchQuery: "kitchen storage containers jars",
     brands: ["Tupperware", "Cello", "Milton", "Signoraware"],
     nameTemplates: [
@@ -274,8 +291,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== HOME ESSENTIALS =====
   {
-    category: "Home Essentials",
-    subCategory: "Cleaning Supplies",
+    category: "Groceries & Pets",
+    subCategory: "Laundry & Household", // child: Cleaning
     searchQuery: "home cleaning supplies detergent",
     brands: ["Vim", "Surf Excel", "Harpic", "Lizol", "Colin"],
     nameTemplates: [
@@ -294,8 +311,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
     ],
   },
   {
-    category: "Home Essentials",
-    subCategory: "Bedsheets & Linen",
+    category: "Home & Lifestyle",
+    subCategory: "Bedding", // child: Bed Sheets
     searchQuery: "bedsheet home linen",
     brands: ["Bombay Dyeing", "Spaces", "Cortina", "Raymond Home"],
     nameTemplates: [
@@ -316,8 +333,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== SNACKS - CHIPS =====
   {
-    category: "Groceries",
-    subCategory: "Chips",
+    category: "Groceries & Pets",
+    subCategory: "Breakfast, Choco & Snacks",
     searchQuery: "chips snacks packet",
     brands: ["Lays", "Kurkure", "Bingo", "Haldiram's", "Pringles", "Uncle Chipps"],
     nameTemplates: [
@@ -338,8 +355,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== WATCHES =====
   {
-    category: "Electronics",
-    subCategory: "Watches",
+    category: "Watches, Bags & Jewellery",
+    subCategory: "Men's Watches",
     searchQuery: "wrist watch fashion",
     brands: ["Titan", "Fastrack", "Casio", "Fossil", "Noise", "boAt"],
     nameTemplates: [
@@ -360,8 +377,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== BAGS =====
   {
-    category: "Fashion",
-    subCategory: "Bags",
+    category: "Watches, Bags & Jewellery",
+    subCategory: "Mens Bags", // child: Backpacks
     searchQuery: "backpack handbag fashion",
     brands: ["Wildcraft", "American Tourister", "Skybags", "Puma", "Caprese"],
     nameTemplates: [
@@ -382,7 +399,7 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== TOYS & GAMES =====
   {
-    category: "Gaming",
+    category: "Mother & Baby",
     subCategory: "Toys & Games",
     searchQuery: "kids toys games",
     brands: ["Funskool", "Hot Wheels", "LEGO", "Fisher-Price", "Nerf"],
@@ -404,8 +421,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== KIDS =====
   {
-    category: "Kids",
-    subCategory: "Kids Toys",
+    category: "Mother & Baby",
+    subCategory: "Toys & Games", // child: Dolls & Accessories
     searchQuery: "kids toys children",
     brands: ["Fisher-Price", "Hot Wheels", "LEGO", "Barbie", "Funskool"],
     nameTemplates: [
@@ -426,8 +443,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== BIKE =====
   {
-    category: "Bike",
-    subCategory: "Bicycles",
+    category: "Sports & Outdoor",
+    subCategory: "Outdoor Recreation", // child: Cycling
     searchQuery: "bicycle bike cycling",
     brands: ["Hero", "BSA", "Firefox", "Btwin", "Hercules"],
     nameTemplates: [
@@ -446,11 +463,11 @@ const subCategoryConfigs: SubCategoryConfig[] = [
     ],
   },
 
-  // ===== JEEP =====
+  // ===== JEEP (toy/diecast models) =====
   {
-    category: "Jeep",
-    subCategory: "Jeep Models & Accessories",
-    searchQuery: "jeep suv offroad vehicle",
+    category: "Mother & Baby",
+    subCategory: "Remote Control & Vehicles", // child: Die-Cast Vehicles
+    searchQuery: "jeep suv offroad vehicle toy model",
     brands: ["Mahindra", "Force", "Tata", "Jeep"],
     nameTemplates: [
       "{brand} Off-Road Diecast Model",
@@ -470,8 +487,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== MOTORCYCLE =====
   {
-    category: "Motorcycle",
-    subCategory: "Motorcycle Gear",
+    category: "Automotive & Motorbike",
+    subCategory: "Motorcycle", // child: Riding Gear
     searchQuery: "motorcycle riding gear helmet",
     brands: ["Royal Enfield", "Bajaj", "Studds", "Vega", "Steelbird"],
     nameTemplates: [
@@ -492,8 +509,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== EARRINGS =====
   {
-    category: "Jewellery",
-    subCategory: "Earrings",
+    category: "Watches, Bags & Jewellery",
+    subCategory: "Womens Jewellery", // child: Earrings
     searchQuery: "earrings jewelry fashion",
     brands: ["Tanishq", "CaratLane", "Voylla", "Zaveri Pearls", "Sukkhi"],
     nameTemplates: [
@@ -514,8 +531,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== NECKLACE =====
   {
-    category: "Jewellery",
-    subCategory: "Necklace",
+    category: "Watches, Bags & Jewellery",
+    subCategory: "Womens Jewellery", // child: Necklaces
     searchQuery: "necklace jewelry set",
     brands: ["Tanishq", "CaratLane", "Voylla", "Zaveri Pearls", "Sukkhi"],
     nameTemplates: [
@@ -536,8 +553,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== RINGS =====
   {
-    category: "Jewellery",
-    subCategory: "Rings",
+    category: "Watches, Bags & Jewellery",
+    subCategory: "Womens Jewellery", // child: Rings
     searchQuery: "ring jewelry fashion",
     brands: ["Tanishq", "CaratLane", "Voylla", "Sukkhi", "Giva"],
     nameTemplates: [
@@ -558,8 +575,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== BANGLES =====
   {
-    category: "Jewellery",
-    subCategory: "Bangles",
+    category: "Watches, Bags & Jewellery",
+    subCategory: "Womens Jewellery", // child: Bracelets
     searchQuery: "bangles jewelry traditional",
     brands: ["Tanishq", "Voylla", "Sukkhi", "Zaveri Pearls", "Giva"],
     nameTemplates: [
@@ -580,8 +597,9 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== SPORTS =====
   {
-    category: "Health",
-    subCategory: "Sports",
+    // ⚠️ RECHECK — mixed items (football/racket/mat/gloves); closest single bucket used
+    category: "Sports & Outdoor",
+    subCategory: "Exercise & Fitness",
     searchQuery: "sports fitness equipment",
     brands: ["Nivia", "Cosco", "Yonex", "Nike", "Decathlon"],
     nameTemplates: [
@@ -602,8 +620,9 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== BABY PRODUCTS =====
   {
-    category: "Baby",
-    subCategory: "Baby Products",
+    // ⚠️ RECHECK — mixed (diapers/lotion/wipes/bottle); diapering-heavy bucket used
+    category: "Mother & Baby",
+    subCategory: "Diapering & Potty",
     searchQuery: "baby care products",
     brands: ["Pampers", "Johnson's", "Himalaya", "Chicco", "Mee Mee"],
     nameTemplates: [
@@ -622,10 +641,10 @@ const subCategoryConfigs: SubCategoryConfig[] = [
     ],
   },
 
-  // ===== ELECTRONICS =====
+  // ===== ELECTRONICS ACCESSORIES =====
   {
-    category: "Electronics",
-    subCategory: "Electronics Accessories",
+    category: "Electronic Accessories",
+    subCategory: "Headphones & Headsets", // child: Wireless Earbuds
     searchQuery: "electronics gadgets accessories",
     brands: ["Sony", "JBL", "boAt", "Samsung", "Mi", "Realme"],
     nameTemplates: [
@@ -646,8 +665,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== MOBILES =====
   {
-    category: "Mobiles",
-    subCategory: "Smartphones",
+    category: "Electronic Devices",
+    subCategory: "Smart Phones",
     searchQuery: "smartphone mobile phone",
     brands: ["Samsung", "Redmi", "Realme", "Vivo", "Oppo", "Apple"],
     nameTemplates: [
@@ -668,7 +687,7 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== LAPTOPS =====
   {
-    category: "Laptops",
+    category: "Electronic Devices",
     subCategory: "Laptops",
     searchQuery: "laptop computer notebook",
     brands: ["HP", "Dell", "Lenovo", "Asus", "Acer", "Apple"],
@@ -690,7 +709,7 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== FURNITURE =====
   {
-    category: "Furniture",
+    category: "Home & Lifestyle",
     subCategory: "Furniture",
     searchQuery: "furniture home sofa chair",
     brands: ["Nilkamal", "Godrej Interio", "Urban Ladder", "Pepperfry", "Wakefit"],
@@ -712,8 +731,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== PRESSURE COOKER =====
   {
-    category: "Home & Kitchen",
-    subCategory: "Pressure Cooker",
+    category: "TV & Home Appliances",
+    subCategory: "Kitchen Appliances",
     searchQuery: "pressure cooker kitchen appliance",
     brands: ["Prestige", "Hawkins", "Pigeon", "Butterfly", "Vinod"],
     nameTemplates: [
@@ -734,8 +753,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== GAS STOVE / INDUCTION =====
   {
-    category: "Home & Kitchen",
-    subCategory: "Gas Stove & Induction",
+    category: "TV & Home Appliances",
+    subCategory: "Kitchen Appliances", // child: Cooktop & Range
     searchQuery: "gas stove induction cooktop kitchen",
     brands: ["Prestige", "Sunflame", "Pigeon", "Elica", "Butterfly"],
     nameTemplates: [
@@ -756,8 +775,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== WATER BOTTLE / FLASK =====
   {
-    category: "Home & Kitchen",
-    subCategory: "Water Bottle & Flask",
+    category: "Sports & Outdoor",
+    subCategory: "Sports Accessories", // child: Water Bottles
     searchQuery: "water bottle flask steel",
     brands: ["Milton", "Cello", "Borosil", "Pigeon", "Nalgene"],
     nameTemplates: [
@@ -778,8 +797,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== BLENDER / MIXER GRINDER =====
   {
-    category: "Home & Kitchen",
-    subCategory: "Mixer Grinder",
+    category: "TV & Home Appliances",
+    subCategory: "Kitchen Appliances", // child: Blender/Mixer/Grinder
     searchQuery: "mixer grinder blender kitchen appliance",
     brands: ["Preethi", "Bajaj", "Philips", "Prestige", "Butterfly"],
     nameTemplates: [
@@ -800,8 +819,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== IRON BOX =====
   {
-    category: "Home & Kitchen",
-    subCategory: "Iron Box",
+    category: "TV & Home Appliances",
+    subCategory: "Irons & Garment Care", // child: Irons
     searchQuery: "iron box clothes press",
     brands: ["Philips", "Bajaj", "Havells", "Usha", "Orient"],
     nameTemplates: [
@@ -822,8 +841,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== CURTAINS & BLINDS =====
   {
-    category: "Home Essentials",
-    subCategory: "Curtains & Blinds",
+    category: "Home & Lifestyle",
+    subCategory: "Decor", // child: Curtains
     searchQuery: "curtains window blinds home decor",
     brands: ["Story@Home", "Homefab India", "Bombay Dyeing", "Cortina", "Spaces"],
     nameTemplates: [
@@ -844,8 +863,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== MEN'S INNERWEAR =====
   {
-    category: "Fashion",
-    subCategory: "Men's Innerwear",
+    category: "Men's Fashion",
+    subCategory: "Inner Wear",
     searchQuery: "men innerwear vest boxer cotton",
     brands: ["Jockey", "Rupa", "Dollar", "VIP", "Amul Macho"],
     nameTemplates: [
@@ -866,8 +885,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== FORMAL SHOES =====
   {
-    category: "Fashion",
-    subCategory: "Formal Shoes",
+    category: "Men's Fashion",
+    subCategory: "Boy's Shoes", // child: Formal Shoes (per taxonomy naming)
     searchQuery: "formal shoes leather men",
     brands: ["Bata", "Red Tape", "Woodland", "Hush Puppies", "Metro"],
     nameTemplates: [
@@ -888,8 +907,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== SPORTS SHOES / SNEAKERS =====
   {
-    category: "Fashion",
-    subCategory: "Sports Shoes",
+    category: "Men's Fashion",
+    subCategory: "Boy's Shoes", // child: Sneakers
     searchQuery: "sports shoes sneakers running",
     brands: ["Nike", "Adidas", "Puma", "Reebok", "Asics", "Skechers"],
     nameTemplates: [
@@ -910,8 +929,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== BELTS & WALLETS =====
   {
-    category: "Fashion",
-    subCategory: "Belts & Wallets",
+    category: "Watches, Bags & Jewellery",
+    subCategory: "Mens Bags", // child: Wallets & Cardholders
     searchQuery: "leather belt wallet men accessories",
     brands: ["Woodland", "Hidesign", "Baggit", "Louis Philippe", "Tommy Hilfiger"],
     nameTemplates: [
@@ -932,8 +951,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== SAREES =====
   {
-    category: "Fashion",
-    subCategory: "Sarees",
+    category: "Women's Fashion",
+    subCategory: "Unstitched Fabric", // child: Sarees
     searchQuery: "saree indian ethnic wear",
     brands: ["Kalini", "Mimosa", "Soch", "Fabindia", "Nalli"],
     nameTemplates: [
@@ -954,8 +973,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== KURTIS & ETHNIC WEAR =====
   {
-    category: "Fashion",
-    subCategory: "Kurtis & Ethnic Wear",
+    category: "Women's Fashion",
+    subCategory: "Kurtas & Shalwar Kameez", // child: Kurtis
     searchQuery: "kurti ethnic wear indian women",
     brands: ["Biba", "W", "Global Desi", "Aurelia", "Libas"],
     nameTemplates: [
@@ -974,30 +993,31 @@ const subCategoryConfigs: SubCategoryConfig[] = [
     ],
   },
   {
-  category: "Beauty & Makeup",
-  subCategory: "Fragrance",
-  searchQuery: "perfume fragrance bottle cosmetics",
-  brands: ["Fogg", "Wild Stone", "Nivea", "Park Avenue", "Denver", "Engage"],
-  nameTemplates: [
-    "{brand} Eau De Parfum",
-    "{brand} Body Spray",
-    "{brand} Deodorant Perfume",
-    "{brand} Signature Fragrance",
-  ],
-  priceRange: [149, 2999],
-  highlightsPool: ["Long lasting scent", "Fresh fragrance", "Best Price", "Elegant bottle"],
-  featuresPool: [
-    "Long-lasting Fragrance Notes",
-    "Alcohol-based Formula",
-    "Perfect for Daily & Occasion Wear",
-    "Comes in Premium Packaging",
-  ],
-},
+    category: "Health & Beauty",
+    subCategory: "Fragrances",
+    searchQuery: "perfume fragrance bottle cosmetics",
+    brands: ["Fogg", "Wild Stone", "Nivea", "Park Avenue", "Denver", "Engage"],
+    nameTemplates: [
+      "{brand} Eau De Parfum",
+      "{brand} Body Spray",
+      "{brand} Deodorant Perfume",
+      "{brand} Signature Fragrance",
+    ],
+    priceRange: [149, 2999],
+    highlightsPool: ["Long lasting scent", "Fresh fragrance", "Best Price", "Elegant bottle"],
+    featuresPool: [
+      "Long-lasting Fragrance Notes",
+      "Alcohol-based Formula",
+      "Perfect for Daily & Occasion Wear",
+      "Comes in Premium Packaging",
+    ],
+  },
 
   // ===== RAINCOATS / UMBRELLAS =====
   {
-    category: "Fashion",
-    subCategory: "Raincoats & Umbrellas",
+    // ⚠️ RECHECK — no dedicated rainwear leaf; outdoor bucket used
+    category: "Sports & Outdoor",
+    subCategory: "Outdoor Recreation",
     searchQuery: "raincoat umbrella rain gear",
     brands: ["Duckback", "John's", "Zeel", "Fastrack", "Stag"],
     nameTemplates: [
@@ -1018,8 +1038,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== HAND SANITIZER =====
   {
-    category: "Personal Care",
-    subCategory: "Hand Sanitizer",
+    category: "Health & Beauty",
+    subCategory: "Personal Care",
     searchQuery: "hand sanitizer hygiene",
     brands: ["Dettol", "Savlon", "Lifebuoy", "Godrej Protekt"],
     nameTemplates: [
@@ -1040,8 +1060,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== FACE MASKS =====
   {
-    category: "Personal Care",
-    subCategory: "Face Masks",
+    category: "Health & Beauty",
+    subCategory: "Medical Supplies", // child: Surgical Masks
     searchQuery: "face mask protective health",
     brands: ["Cotton World", "Xoxoday", "Boxo", "Wakefit", "Medtech"],
     nameTemplates: [
@@ -1062,8 +1082,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== RAZOR / SHAVING KIT =====
   {
-    category: "Personal Care",
-    subCategory: "Shaving Kit",
+    category: "Health & Beauty",
+    subCategory: "Men's Care", // child: Shaving & Grooming
     searchQuery: "razor shaving kit men grooming",
     brands: ["Gillette", "Bic", "Philips", "Bevel", "Park Avenue"],
     nameTemplates: [
@@ -1084,8 +1104,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== HAIR DRYER / STRAIGHTENER =====
   {
-    category: "Personal Care",
-    subCategory: "Hair Styling Tools",
+    category: "Health & Beauty",
+    subCategory: "Beauty Tools", // child: Hair Styling Appliances
     searchQuery: "hair dryer straightener styling tool",
     brands: ["Philips", "Havells", "Vega", "Nova", "Panasonic"],
     nameTemplates: [
@@ -1106,8 +1126,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== NAIL CARE KIT =====
   {
-    category: "Personal Care",
-    subCategory: "Nail Care Kit",
+    category: "Health & Beauty",
+    subCategory: "Makeup", // child: Nails
     searchQuery: "nail care manicure kit",
     brands: ["Vega", "Faces Canada", "Nova", "Kiro", "Lakme"],
     nameTemplates: [
@@ -1128,8 +1148,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== POWER STRIP / EXTENSION BOARD =====
   {
-    category: "Electronics",
-    subCategory: "Power Strip & Extension Board",
+    category: "Home & Lifestyle",
+    subCategory: "Tools, DIY & Outdoor", // child: Electrical
     searchQuery: "extension board power strip electrical",
     brands: ["Anchor", "Havells", "GM", "Philips", "Goldmedal"],
     nameTemplates: [
@@ -1150,8 +1170,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== LED BULBS / SMART LIGHTS =====
   {
-    category: "Electronics",
-    subCategory: "LED Bulbs & Smart Lights",
+    category: "Home & Lifestyle",
+    subCategory: "Lighting", // child: Light Bulbs
     searchQuery: "led bulb smart light home",
     brands: ["Philips", "Syska", "Wipro", "Havells", "Mi"],
     nameTemplates: [
@@ -1172,8 +1192,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== USB CABLES & CHARGERS =====
   {
-    category: "Electronics",
-    subCategory: "USB Cables & Chargers",
+    category: "Electronic Accessories",
+    subCategory: "Mobile Accessories", // child: Cables & Converters
     searchQuery: "usb cable charger mobile accessories",
     brands: ["boAt", "Mi", "Samsung", "Portronics", "Ambrane"],
     nameTemplates: [
@@ -1194,8 +1214,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== MEMORY CARDS / PEN DRIVES =====
   {
-    category: "Electronics",
-    subCategory: "Memory Cards & Pen Drives",
+    category: "Electronic Accessories",
+    subCategory: "Storage", // child: Flash Drives
     searchQuery: "memory card pendrive storage",
     brands: ["SanDisk", "Samsung", "Kingston", "HP", "Strontium"],
     nameTemplates: [
@@ -1216,8 +1236,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== CAMERA TRIPOD =====
   {
-    category: "Electronics",
-    subCategory: "Camera Tripod",
+    category: "Electronic Accessories",
+    subCategory: "Camera Accessories", // child: Tripods & Monopods
     searchQuery: "camera tripod stand photography",
     brands: ["Simpex", "Digitek", "Manfrotto", "AmazonBasics", "Photron"],
     nameTemplates: [
@@ -1238,8 +1258,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== WEIGHING SCALE =====
   {
-    category: "Health",
-    subCategory: "Weighing Scale",
+    category: "Health & Beauty",
+    subCategory: "Medical Supplies", // child: Health Monitors & Tests
     searchQuery: "weighing scale digital health",
     brands: ["Dr. Trust", "Omron", "HealthSense", "Equinox", "Venus"],
     nameTemplates: [
@@ -1260,8 +1280,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== BLOOD PRESSURE MONITOR =====
   {
-    category: "Health",
-    subCategory: "Blood Pressure Monitor",
+    category: "Health & Beauty",
+    subCategory: "Medical Supplies", // child: Health Monitors & Tests
     searchQuery: "blood pressure monitor health device",
     brands: ["Omron", "Dr. Trust", "HealthSense", "BPL", "AccuSure"],
     nameTemplates: [
@@ -1282,8 +1302,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== RESISTANCE BANDS =====
   {
-    category: "Health",
-    subCategory: "Resistance Bands",
+    category: "Sports & Outdoor",
+    subCategory: "Exercise & Fitness", // child: Exercise Bands
     searchQuery: "resistance bands fitness workout",
     brands: ["Strauss", "Kore", "Boldfit", "Fitsy", "AmazonBasics"],
     nameTemplates: [
@@ -1304,8 +1324,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== SKIPPING ROPE =====
   {
-    category: "Health",
-    subCategory: "Skipping Rope",
+    category: "Sports & Outdoor",
+    subCategory: "Exercise & Fitness", // child: Cardio Training Equipment
     searchQuery: "skipping rope jump fitness",
     brands: ["Strauss", "Cosco", "Boldfit", "Nivia", "Kobo"],
     nameTemplates: [
@@ -1326,8 +1346,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== PROTEIN POWDER / SUPPLEMENTS =====
   {
-    category: "Health",
-    subCategory: "Protein Supplements",
+    category: "Sports & Outdoor",
+    subCategory: "Supplements", // child: Proteins
     searchQuery: "protein powder supplement fitness",
     brands: ["MuscleBlaze", "Optimum Nutrition", "MyProtein", "Ultimate Nutrition", "GNC"],
     nameTemplates: [
@@ -1348,8 +1368,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== BABY CARRIER / STROLLER =====
   {
-    category: "Baby",
-    subCategory: "Baby Carrier & Stroller",
+    category: "Mother & Baby",
+    subCategory: "Baby Gear", // child: Strollers / Backpacks & Carriers
     searchQuery: "baby carrier stroller infant",
     brands: ["Chicco", "LuvLap", "Mee Mee", "Baybee", "R for Rabbit"],
     nameTemplates: [
@@ -1370,8 +1390,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== KIDS SCHOOL BAG =====
   {
-    category: "Kids",
-    subCategory: "Kids School Bag",
+    category: "Mother & Baby",
+    subCategory: "Baby Gear", // child: Kids Bag
     searchQuery: "kids school bag backpack",
     brands: ["Skybags", "American Tourister", "Wildcraft", "Genie", "Disney"],
     nameTemplates: [
@@ -1392,8 +1412,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== BABY BATH TUB =====
   {
-    category: "Baby",
-    subCategory: "Baby Bath Tub",
+    category: "Mother & Baby",
+    subCategory: "Baby Personal Care", // child: Bathing Tubs & Seats
     searchQuery: "baby bath tub infant care",
     brands: ["Chicco", "LuvLap", "Mee Mee", "Baybee", "Fisher-Price"],
     nameTemplates: [
@@ -1414,8 +1434,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== KIDS WATER BOTTLE =====
   {
-    category: "Kids",
-    subCategory: "Kids Water Bottle",
+    category: "Mother & Baby",
+    subCategory: "Feeding",
     searchQuery: "kids water bottle school",
     brands: ["Milton", "Cello", "Pigeon", "Disney", "Safari"],
     nameTemplates: [
@@ -1436,8 +1456,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== TRAVEL BAGS / SUITCASES =====
   {
-    category: "Fashion",
-    subCategory: "Travel Bags & Suitcases",
+    category: "Watches, Bags & Jewellery",
+    subCategory: "Luggage & Suitcase",
     searchQuery: "travel suitcase luggage bag",
     brands: ["American Tourister", "Safari", "VIP", "Skybags", "Aristocrat"],
     nameTemplates: [
@@ -1458,8 +1478,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== WALL CLOCKS =====
   {
-    category: "Home Essentials",
-    subCategory: "Wall Clocks",
+    category: "Home & Lifestyle",
+    subCategory: "Decor", // child: Clocks
     searchQuery: "wall clock home decor",
     brands: ["Ajanta", "Titan", "Blacksmith", "Fandeliers", "HomeSage"],
     nameTemplates: [
@@ -1480,8 +1500,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== PHOTO FRAMES =====
   {
-    category: "Home Essentials",
-    subCategory: "Photo Frames",
+    category: "Home & Lifestyle",
+    subCategory: "Decor", // child: Picture Frames
     searchQuery: "photo frame wall decor",
     brands: ["HomeSage", "Art Street", "WENS", "Kartik Crafts"],
     nameTemplates: [
@@ -1502,8 +1522,8 @@ const subCategoryConfigs: SubCategoryConfig[] = [
 
   // ===== STUDY TABLE LAMP =====
   {
-    category: "Home Essentials",
-    subCategory: "Study Table Lamp",
+    category: "Home & Lifestyle",
+    subCategory: "Lighting", // child: Table Lamps
     searchQuery: "study lamp table light",
     brands: ["Philips", "Havells", "Wipro", "Syska", "Eveready"],
     nameTemplates: [
@@ -1523,19 +1543,12 @@ const subCategoryConfigs: SubCategoryConfig[] = [
   },
 ];
 
-// Fetches 40 unique photos per sub-category (Unsplash max per_page = 30,
-// so we combine page 1 (30) + page 2 (10) in parallel to get 40)
-// Small helper to pause execution — used both for pacing requests and for
-// backing off when Unsplash's rate limit (50 req/hr on the free "Demo" tier)
-// is hit.
+// Fetches up to 30 photos per sub-category using a SINGLE Unsplash request
+// (Unsplash's max per_page is 30 anyway). If Unsplash returns a rate limit
+// error, we retry a couple of times with an increasing delay before giving
+// up and letting the caller fall back to a placeholder image.
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// Fetches up to 30 photos per sub-category using a SINGLE Unsplash request
-// (Unsplash's max per_page is 30 anyway, and the earlier per_page:30 +
-// per_page:10 two-call approach doubled our request count and burned through
-// the free-tier rate limit fast). If Unsplash returns a rate limit error, we
-// retry a couple of times with an increasing delay before giving up and
-// letting the caller fall back to a placeholder image.
 const fetchPhotos = async (query: string, retries = 2): Promise<{ url: string; alt: string }[]> => {
   try {
     const response = await axios.get(`${UNSPLASH_BASE_URL}/search/photos`, {
@@ -1547,7 +1560,6 @@ const fetchPhotos = async (query: string, retries = 2): Promise<{ url: string; a
 
     const results = response.data.results;
 
-    // Dedupe defensively, even though a single page shouldn't have repeats
     const seen = new Set<string>();
     const uniquePhotos = results.filter((photo: any) => {
       if (seen.has(photo.id)) return false;
@@ -1580,7 +1592,6 @@ const randomBetween = (min: number, max: number) =>
 
 const pickRandom = <T,>(arr: T[]): T => arr[Math.floor(Math.random() * arr.length)];
 
-// Picks 3-4 random, non-repeating items from a pool for highlights/features
 const pickRandomSubset = <T,>(arr: T[], count: number): T[] => {
   const shuffled = [...arr].sort(() => 0.5 - Math.random());
   return shuffled.slice(0, count);
@@ -1628,9 +1639,6 @@ const seed = async () => {
         );
       }
 
-      // Pace requests so we stay well under Unsplash's free-tier rate limit
-      // (50 requests/hour on the Demo tier). ~2s between calls keeps ~38
-      // categories comfortably inside that budget.
       if (index < subCategoryConfigs.length - 1) {
         await sleep(2000);
       }
@@ -1710,7 +1718,7 @@ const seed = async () => {
       console.log(`  ✅ Created ${productsForSubCategory.length} products for ${config.subCategory}`);
     }
 
-    console.log(`\n🎉 Done! ${totalCreated} home essentials products created.`);
+    console.log(`\n🎉 Done! ${totalCreated} products created.`);
     process.exit(0);
   } catch (error) {
     console.error("❌ Seeding failed:", error);

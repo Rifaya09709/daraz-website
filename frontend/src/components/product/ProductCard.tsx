@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { FaStar } from "react-icons/fa";
+import { FaStar, FaTruck, FaCoins } from "react-icons/fa";
 
 import { Product } from "../../types/product";
 import { getPrimaryImage, getFinalPrice } from "../../utils/helpers";
@@ -16,6 +16,14 @@ interface ProductCardProps {
 const ProductCard = ({ product, imageOverride }: ProductCardProps) => {
   const image = imageOverride || getPrimaryImage(product.images);
   const finalPrice = getFinalPrice(product);
+
+  // ⚠️ These two fields aren't in the Product type/schema yet — add them
+  // (e.g. `freeDelivery: boolean` and `coinsSave: number`) wherever your
+  // Product model/type is defined, then remove this optional-chaining
+  // fallback once they're guaranteed to exist.
+  const hasFreeDelivery = Boolean((product as any).freeDelivery);
+  const coinsSave = (product as any).coinsSave as number | undefined;
+  const hasCoins = Boolean(coinsSave && coinsSave > 0);
 
   return (
     <Link
@@ -43,6 +51,25 @@ const ProductCard = ({ product, imageOverride }: ProductCardProps) => {
             </span>
           </div>
         )}
+
+        {/* Free Delivery / Coins badge strip — bottom-left, segments flush
+            against each other so they read as one continuous bar */}
+        {(hasFreeDelivery || hasCoins) && (
+          <div className="absolute bottom-0 left-0 flex text-[10px] font-bold text-white leading-none">
+            {hasFreeDelivery && (
+              <span className="flex items-center gap-1 bg-emerald-600 px-2 py-1">
+                <FaTruck size={10} />
+                FREE DELIVERY
+              </span>
+            )}
+            {hasCoins && (
+              <span className="flex items-center gap-1 bg-amber-500 px-2 py-1">
+                <FaCoins size={10} />
+                COINS
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Info */}
@@ -61,6 +88,12 @@ const ProductCard = ({ product, imageOverride }: ProductCardProps) => {
             </span>
           )}
         </div>
+
+        {hasCoins && (
+          <span className="mt-1 inline-block bg-amber-100 text-amber-800 text-[11px] font-medium px-1.5 py-0.5 rounded">
+            Coins save {formatCurrency(coinsSave as number)}
+          </span>
+        )}
 
         {product.totalReviews > 0 && (
           <div className="mt-1 flex items-center gap-1">
