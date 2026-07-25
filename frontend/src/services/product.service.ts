@@ -62,8 +62,13 @@ export const getTrendingProducts = async () => {
   return response.data;
 };
 
-export const getLatestProducts = async () => {
-  const response = await api.get("/products/latest");
+// `limit` is optional — when omitted, the backend's own default applies
+// (e.g. 12/20). Pass a number to pull more, e.g. getLatestProducts(100)
+// for the bottom-nav filmstrip.
+export const getLatestProducts = async (limit?: number) => {
+  const response = await api.get("/products/latest", {
+    params: limit ? { limit } : undefined,
+  });
   return response.data;
 };
 
