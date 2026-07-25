@@ -137,13 +137,19 @@ export const getProducts = async (req: Request, res: Response) => {
       query.category = new RegExp(`^${safeCategory}$`, "i");
     }
 
-    // NEW: subCategory filter — without this, selecting "Smartwatches" (which
+    // subCategory filter — without this, selecting "Smartwatches" (which
     // maps to the broad "Electronics" category) pulled in every Electronics
     // subCategory (Camera Tripods, LED Bulbs, USB Cables, etc.), which is why
     // unrelated product photos (like a camera tripod) showed up.
     if (req.query.subCategory) {
       const safeSubCategory = escapeRegex(req.query.subCategory as string);
       query.subCategory = new RegExp(`^${safeSubCategory}$`, "i");
+    }
+
+    // NEW: tag filter — used for campaign pages like "low-price",
+    // "new-arrivals", etc. Products get tagged via a script or on creation.
+    if (req.query.tag) {
+      query.tags = { $in: [req.query.tag as string] };
     }
 
     if (req.query.brand) query.brand = req.query.brand;

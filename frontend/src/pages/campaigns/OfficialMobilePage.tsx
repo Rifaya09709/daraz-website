@@ -1,184 +1,552 @@
-// src/pages/campaigns/OfficialMobilePage.tsx
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { FaShieldAlt, FaBoxOpen, FaTruck, FaPercent } from "react-icons/fa";
-import api from "@/lib/api"; // your existing axios/fetch instance
+// src/controllers/productController.ts
+import { Request, Response } from "express";
+import Product from "../models/Product";
+import User from "../models/User";
+import cloudinary from "../config/cloudinary";
 
-interface Product {
-  _id: string;
-  name: string;
-  image: string;       // e.g. "/uploads/products/xyz.jpg" or full CDN URL from DB
-  price: number;
-  oldPrice?: number;
-  discountPct?: number;
-  rating?: number;
-  sold?: number;
-  section: "just-launched" | "premium" | "budget";
-  brand?: string;
-}
+const escapeRegex = (str: string) => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-const trustBadges = [
-  { Icon: FaShieldAlt, label: "Authentic" },
-  { Icon: FaBoxOpen, label: "Official Warranty" },
-  { Icon: FaTruck, label: "Daraz Shipping" },
-  { Icon: FaPercent, label: "0% EMI" },
-];
+// ===============================
+// Create Product
+// ===============================
+export const createProduct = async (req: Request, res: Response) => {
+  try {
+    const {
+      name,
+      description,
+      brand,
+      category,
+      subCategory,
+      sku,
+      barcode,
+      price,
+      discountPrice,
+      stock,
+      tags,
+      highlights,
+      features,
+      warranty,
+      seoTitle,
+      seoDescription,
+      unsplashImages,
+    } = req.body;
 
-const ProductCard = ({ p }: { p: Product }) => (
-  <Link
-    to={`/product/${p._id}`}
-    className="relative bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden flex flex-col"
-  >
-    {p.discountPct && (
-      <span className="absolute top-2 left-2 z-10 bg-rose-600 text-white text-xs font-bold px-2 py-0.5 rounded">
-        -{p.discountPct}%
-      </span>
-    )}
-    <img
-      src={p.image}
-      alt={p.name}
-      className="w-full aspect-square object-cover"
-      onError={(e) => {
-        // fallback if DB image path is broken/missing
-        (e.target as HTMLImageElement).src = "/placeholder-phone.png";
-      }}
-    />
-    <div className="p-2 flex flex-col gap-0.5">
-      <p className="text-xs text-gray-700 truncate">{p.name}</p>
-      <div className="flex items-baseline gap-2">
-        <span className="text-rose-600 font-bold text-sm">৳{p.price.toLocaleString()}</span>
-        {p.oldPrice && (
-          <span className="text-gray-400 line-through text-xs">৳{p.oldPrice.toLocaleString()}</span>
-        )}
-      </div>
-      {p.rating && (
-        <span className="text-[11px] text-gray-500">
-          ★{p.rating} {p.sold ? `| ${p.sold} Sold` : ""}
-        </span>
-      )}
-      <button className="mt-1 bg-rose-600 text-white text-xs font-semibold py-1.5 rounded">
-        Shop now
-      </button>
-    </div>
-  </Link>
-);
+    const seller = await User.findById((req as any).user.id);
 
-const SectionHeader = ({ title, subtitle }: { title: string; subtitle?: string }) => (
-  <div className="bg-sky-100 px-4 py-3 mt-6">
-    <h2 className="font-bold text-lg">{title}</h2>
-    {subtitle && <p className="text-sm text-gray-600">{subtitle}</p>}
-  </div>
-);
+    if (!seller) {
+      return res.status(404).json({
+        success: false,
+        message: "Seller not found",
+      });
+    }
 
-const ProductGridSkeleton = () => (
-  <div className="grid grid-cols-3 gap-2 px-4 py-3">
-    {[1, 2, 3].map((i) => (
-      <div key={i} className="animate-pulse bg-gray-100 rounded-lg aspect-square" />
-    ))}
-  </div>
-);
+    const uploadedImages =
+      (req.files as any[])?.map((file) => ({
+        url: file.path,
+        public_id: file.filename,
+        alt: name,
+      })) || [];
 
-const OfficialMobilePage = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [brands, setBrands] = useState<{ name: string; logo: string; to: string }[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
+    let unsplashImageList: { url: string; alt?: string }[] = [];
+    if (unsplashImages) {
       try {
-        setLoading(true);
-        // Backend endpoints — adjust paths to match your Node/Express routes
-        const [productsRes, brandsRes] = await Promise.all([
-          api.get("/api/products", { params: { category: "mobiles" } }),
-          api.get("/api/brands", { params: { category: "mobiles" } }),
-        ]);
-        setProducts(productsRes.data.products); // each product.image comes straight from Mongo doc
-        setBrands(
-          brandsRes.data.brands.map((b: any) => ({
-            name: b.name,
-            logo: b.logo, // image field from brand doc in DB
-            to: `/brand/${b.slug}`,
-          }))
-        );
-      } catch (err) {
-        console.error(err);
-        setError("Failed to load mobile store data.");
-      } finally {
-        setLoading(false);
+        unsplashImageList = JSON.parse(unsplashImages);
+      } catch {
+        return res.status(400).json({
+          success: false,
+          message: "unsplashImages must be a valid JSON array",
+        });
+      }
+    }
+
+    const combinedImages = [
+      ...uploadedImages,
+      ...unsplashImageList.map((img) => ({
+        url: img.url,
+        public_id: "",
+        alt: img.alt || name,
+      })),
+    ].map((img, index) => ({
+      ...img,
+      isPrimary: index === 0,
+    }));
+
+    const parseListField = (value: any): string[] => {
+      if (!value) return [];
+      if (Array.isArray(value)) return value;
+      try {
+        const parsed = JSON.parse(value);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
       }
     };
-    fetchData();
-  }, []);
 
-  const justLaunched = products.filter((p) => p.section === "just-launched");
-  const premiumPhones = products.filter((p) => p.section === "premium");
-  const budgetPhones = products.filter((p) => p.section === "budget");
+    const product = await Product.create({
+      name,
+      slug: name.toLowerCase().trim().replace(/\s+/g, "-"),
+      description,
+      brand,
+      category,
+      subCategory,
+      sku,
+      barcode,
+      price,
+      discountPrice,
+      discountPercentage:
+        discountPrice && price
+          ? Math.round(((price - discountPrice) / price) * 100)
+          : 0,
+      stock,
+      images: combinedImages,
+      seller: seller._id,
+      tags,
+      highlights: parseListField(highlights),
+      features: parseListField(features),
+      warranty,
+      seoTitle,
+      seoDescription,
+    });
 
-  return (
-    <div className="max-w-md mx-auto bg-white min-h-screen pb-10">
-      {/* Hero banner */}
-      <div className="relative bg-gradient-to-r from-orange-600 to-yellow-400 p-4 text-white overflow-hidden">
-        <p className="text-2xl font-black leading-tight">Daraz</p>
-        <p className="text-3xl font-black text-yellow-300 leading-tight">
-          OFFICIAL MOBILE STORE
-        </p>
-        <div className="flex flex-wrap gap-3 mt-3 text-[11px]">
-          {trustBadges.map(({ Icon, label }) => (
-            <span key={label} className="flex items-center gap-1 bg-white/20 rounded px-2 py-1">
-              <Icon size={12} /> {label}
-            </span>
-          ))}
-        </div>
-        <Link
-          to="/campaign/mobiles/shop"
-          className="inline-block mt-4 bg-yellow-300 text-gray-900 font-bold text-sm px-5 py-2 rounded-full"
-        >
-          Shop Now
-        </Link>
-      </div>
-
-      {error && (
-        <p className="text-center text-sm text-red-500 py-4">{error}</p>
-      )}
-
-      {/* Brand grid */}
-      <div className="grid grid-cols-4 gap-4 px-4 py-6">
-        {brands.map((b) => (
-          <Link key={b.name} to={b.to} className="flex flex-col items-center gap-1.5 text-center">
-            <span className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-100 to-blue-300 flex items-center justify-center overflow-hidden">
-              <img src={b.logo} alt={b.name} className="w-10 h-10 object-contain" />
-            </span>
-            <span className="text-xs font-medium text-gray-700">{b.name}</span>
-          </Link>
-        ))}
-      </div>
-
-      {/* Just Launched */}
-      <SectionHeader title="Just Launched" />
-      {loading ? <ProductGridSkeleton /> : (
-        <div className="grid grid-cols-3 gap-2 px-4 py-3">
-          {justLaunched.map((p) => <ProductCard key={p._id} p={p} />)}
-        </div>
-      )}
-
-      {/* Best Premium Phone */}
-      <SectionHeader title="Best Premium Phone" subtitle="0% EMI Cost & Under 4,000/Month" />
-      {loading ? <ProductGridSkeleton /> : (
-        <div className="grid grid-cols-3 gap-2 px-4 py-3">
-          {premiumPhones.map((p) => <ProductCard key={p._id} p={p} />)}
-        </div>
-      )}
-
-      {/* Best Budget Phone */}
-      <SectionHeader title="Best Budget Phone" subtitle="0% EMI Cost & Under 2,500/Month" />
-      {loading ? <ProductGridSkeleton /> : (
-        <div className="grid grid-cols-3 gap-2 px-4 py-3">
-          {budgetPhones.map((p) => <ProductCard key={p._id} p={p} />)}
-        </div>
-      )}
-    </div>
-  );
+    return res.status(201).json({
+      success: true,
+      message: "Product created successfully",
+      product,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to create product",
+      error: error instanceof Error ? error.message : error,
+    });
+  }
 };
 
-export default OfficialMobilePage;
+// ===============================
+// Get All Products
+// ===============================
+export const getProducts = async (req: Request, res: Response) => {
+  try {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 12;
+    const skip = (page - 1) * limit;
+
+    const query: any = {};
+
+    if (req.query.category) {
+      const safeCategory = escapeRegex(req.query.category as string);
+      query.category = new RegExp(`^${safeCategory}$`, "i");
+    }
+
+    // subCategory filter — without this, selecting "Smartwatches" (which
+    // maps to the broad "Electronics" category) pulled in every Electronics
+    // subCategory (Camera Tripods, LED Bulbs, USB Cables, etc.), which is why
+    // unrelated product photos (like a camera tripod) showed up.
+    if (req.query.subCategory) {
+      const safeSubCategory = escapeRegex(req.query.subCategory as string);
+      query.subCategory = new RegExp(`^${safeSubCategory}$`, "i");
+    }
+
+    // tag filter — used for campaign pages like "low-price", "new-arrivals", etc.
+    if (req.query.tag) {
+      query.tags = { $in: [req.query.tag as string] };
+    }
+
+    if (req.query.brand) query.brand = req.query.brand;
+    if (req.query.search) query.$text = { $search: req.query.search as string };
+
+    if (req.query.minPrice || req.query.maxPrice) {
+      query.price = {};
+      if (req.query.minPrice) query.price.$gte = Number(req.query.minPrice);
+      if (req.query.maxPrice) query.price.$lte = Number(req.query.maxPrice);
+    }
+
+    const products = await Product.find(query)
+      .populate("seller", "name email")
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    const total = await Product.countDocuments(query);
+
+    return res.status(200).json({
+      success: true,
+      products,
+      page,
+      totalPages: Math.ceil(total / limit),
+      totalProducts: total,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch products",
+      error: error instanceof Error ? error.message : error,
+    });
+  }
+};
+
+// ===============================
+// Get Single Product
+// ===============================
+export const getProductById = async (req: Request, res: Response) => {
+  try {
+    const product = await Product.findById(req.params.id).populate(
+      "seller",
+      "name email"
+    );
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    return res.status(200).json({ success: true, product });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch product",
+      error: error instanceof Error ? error.message : error,
+    });
+  }
+};
+
+// ===============================
+// Update Product
+// ===============================
+export const updateProduct = async (req: Request, res: Response) => {
+  try {
+    const { unsplashImages, highlights, features, warranty } = req.body;
+
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    const uploadedImages =
+      (req.files as any[])?.map((file) => ({
+        url: file.path,
+        public_id: file.filename,
+        alt: req.body.name || product.name,
+      })) || [];
+
+    let unsplashImageList: { url: string; alt?: string }[] = [];
+    if (unsplashImages) {
+      try {
+        unsplashImageList = JSON.parse(unsplashImages);
+      } catch {
+        return res.status(400).json({
+          success: false,
+          message: "unsplashImages must be a valid JSON array",
+        });
+      }
+    }
+
+    const newImages = [
+      ...uploadedImages,
+      ...unsplashImageList.map((img) => ({
+        url: img.url,
+        public_id: "",
+        alt: img.alt || product.name,
+      })),
+    ];
+
+    if (newImages.length > 0) {
+      for (const img of product.images) {
+        if (img.public_id) {
+          await cloudinary.uploader.destroy(img.public_id).catch(() => {});
+        }
+      }
+
+      product.images = newImages.map((img, index) => ({
+        ...img,
+        isPrimary: index === 0,
+      }));
+    }
+
+    const parseListField = (value: any): string[] | undefined => {
+      if (value === undefined) return undefined;
+      if (Array.isArray(value)) return value;
+      try {
+        const parsed = JSON.parse(value);
+        return Array.isArray(parsed) ? parsed : undefined;
+      } catch {
+        return undefined;
+      }
+    };
+
+    product.name = req.body.name || product.name;
+    product.description = req.body.description || product.description;
+    product.brand = req.body.brand || product.brand;
+    product.category = req.body.category || product.category;
+    product.subCategory = req.body.subCategory || product.subCategory;
+
+    product.price = req.body.price ? Number(req.body.price) : product.price;
+    product.discountPrice = req.body.discountPrice
+      ? Number(req.body.discountPrice)
+      : product.discountPrice;
+
+    product.stock = req.body.stock ? Number(req.body.stock) : product.stock;
+
+    product.tags = req.body.tags || product.tags;
+
+    const parsedHighlights = parseListField(highlights);
+    if (parsedHighlights !== undefined) product.highlights = parsedHighlights;
+
+    const parsedFeatures = parseListField(features);
+    if (parsedFeatures !== undefined) product.features = parsedFeatures;
+
+    product.warranty = warranty || product.warranty;
+
+    product.seoTitle = req.body.seoTitle || product.seoTitle;
+    product.seoDescription = req.body.seoDescription || product.seoDescription;
+
+    await product.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Product updated successfully",
+      product,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to update product",
+      error: error instanceof Error ? error.message : error,
+    });
+  }
+};
+
+// ===============================
+// Delete Product
+// ===============================
+export const deleteProduct = async (req: Request, res: Response) => {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    for (const img of product.images) {
+      if (img.public_id) {
+        await cloudinary.uploader.destroy(img.public_id).catch(() => {});
+      }
+    }
+
+    await product.deleteOne();
+
+    return res.status(200).json({
+      success: true,
+      message: "Product deleted successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to delete product",
+      error: error instanceof Error ? error.message : error,
+    });
+  }
+};
+
+// ===============================
+// Remove Single Product Image
+// ===============================
+export const removeProductImage = async (req: Request, res: Response) => {
+  try {
+    const { id, imageIndex } = req.params;
+
+    const product = await Product.findById(id);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    const index = Number(imageIndex);
+    const image = product.images[index];
+
+    if (image?.public_id) {
+      await cloudinary.uploader.destroy(image.public_id).catch(() => {});
+    }
+
+    product.images.splice(index, 1);
+
+    await product.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Image removed successfully",
+      images: product.images,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to remove image",
+      error: error instanceof Error ? error.message : error,
+    });
+  }
+};
+
+// ===============================
+// Add Product Review
+// ===============================
+export const addReview = async (req: Request, res: Response) => {
+  try {
+    const { rating, comment } = req.body;
+
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    const existingReview = product.reviews.find(
+      (review) => review.user.toString() === (req as any).user.id
+    );
+
+    if (existingReview) {
+      return res.status(400).json({
+        success: false,
+        message: "You have already reviewed this product",
+      });
+    }
+
+    product.reviews.push({
+      user: (req as any).user.id,
+      name: (req as any).user.name,
+      rating: Number(rating),
+      comment,
+      createdAt: new Date(),
+    });
+
+    product.totalReviews = product.reviews.length;
+
+    product.rating =
+      product.reviews.reduce((sum, review) => sum + review.rating, 0) /
+      product.totalReviews;
+
+    await product.save();
+
+    return res.status(201).json({
+      success: true,
+      message: "Review added successfully",
+      product,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to add review",
+      error: error instanceof Error ? error.message : error,
+    });
+  }
+};
+
+// ===============================
+// Featured Products
+// ===============================
+export const getFeaturedProducts = async (req: Request, res: Response) => {
+  try {
+    const products = await Product.find({ isFeatured: true }).limit(12);
+    return res.status(200).json({ success: true, products });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch featured products",
+      error: error instanceof Error ? error.message : error,
+    });
+  }
+};
+
+// ===============================
+// Flash Sale Products
+// ===============================
+export const getFlashSaleProducts = async (req: Request, res: Response) => {
+  try {
+    const products = await Product.find({ isFlashSale: true }).limit(20);
+    return res.status(200).json({ success: true, products });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch flash sale products",
+      error: error instanceof Error ? error.message : error,
+    });
+  }
+};
+
+// ===============================
+// Trending Products
+// ===============================
+export const getTrendingProducts = async (req: Request, res: Response) => {
+  try {
+    const products = await Product.find({ isTrending: true })
+      .sort({ sold: -1 })
+      .limit(20);
+
+    return res.status(200).json({ success: true, products });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch trending products",
+      error: error instanceof Error ? error.message : error,
+    });
+  }
+};
+
+// ===============================
+// Latest Products
+// ===============================
+export const getLatestProducts = async (req: Request, res: Response) => {
+  try {
+    const products = await Product.find().sort({ createdAt: -1 }).limit(20);
+    return res.status(200).json({ success: true, products });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch latest products",
+      error: error instanceof Error ? error.message : error,
+    });
+  }
+};
+
+// ===============================
+// Related Products
+// ===============================
+export const getRelatedProducts = async (req: Request, res: Response) => {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    const products = await Product.find({
+      category: product.category,
+      _id: { $ne: product._id },
+    }).limit(8);
+
+    return res.status(200).json({ success: true, products });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch related products",
+      error: error instanceof Error ? error.message : error,
+    });
+  }
+};

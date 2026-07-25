@@ -79,7 +79,7 @@ const AppRoutes = () => {
         <Route path="/messages/chats/:id" element={<ChatsPage />} />
         <Route path="/messages/activities" element={<ActivitiesPage />} />
         <Route path="/messages/promos" element={<PromosPage />} />
-        <Route path="/campaigns/free-delivery" element={<FreeDeliveryPage />} />
+        <Route path="/campaign/free-delivery" element={<FreeDeliveryPage />} />
         <Route path="/campaign/low-price" element={<LowPricePage />} />
             <Route path="/campaign/mobiles" element={<OfficialMobilePage />} />
         <Route path="/channelsPage" element={<ChannelsPage />} />
