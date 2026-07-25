@@ -29,7 +29,7 @@ import { errorHandler } from "./middleware/errorHandler";
 import Message from "./models/Message";
 import Conversation from "./models/Conversation";
 import User from "./models/User";
-import freebieRoutes from "./routes/freebie.routes";
+import freebieRoutes from "./routes/freebieRoutes";
 const app = express();
 const httpServer = createServer(app);
 
