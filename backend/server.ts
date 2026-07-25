@@ -29,7 +29,7 @@ import { errorHandler } from "./middleware/errorHandler";
 import Message from "./models/Message";
 import Conversation from "./models/Conversation";
 import User from "./models/User";
-
+import freebieRoutes from "./routes/freebie.routes";
 const app = express();
 const httpServer = createServer(app);
 
@@ -106,6 +106,7 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/questions", productQuestionRoutes);
 app.use("/api/otp", otpRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/freebies", freebieRoutes);
 
 // =====================================
 // 404 Route

@@ -10,8 +10,8 @@
  * Values marked "⚠️ VERIFY" are still GUESSES (not yet confirmed against
  * the DB) — categories that haven't been checked yet at all: Mobiles,
  * Fashion (only the count "20" is known, not the actual list), Groceries,
- * Baby, Kids, Home Essentials. Run the aggregation again / scroll the
- * result to fill these in, then remove the ⚠️ tags.
+ * Home Essentials. Run the aggregation again / scroll the result to fill
+ * these in, then remove the ⚠️ tags.
  */
 
 export interface CategoryConfig {
@@ -36,6 +36,8 @@ export const CATEGORIES: CategoryConfig[] = [
     category: "Laptops", // confirmed
     subCategories: [
       "Laptops", // confirmed
+      "Laptop Bags", // added — seeded via seedMissingSubcategories.ts
+      "Laptop Accessories", // added — seeded via seedMissingSubcategories.ts
     ],
   },
   {
@@ -62,6 +64,12 @@ export const CATEGORIES: CategoryConfig[] = [
     ],
   },
   {
+    category: "Motorcycle", // confirmed — NEW category, wasn't in the old hardcoded list
+    subCategories: [
+      "Motorcycle Gear", // confirmed
+    ],
+  },
+  {
     category: "Electronics", // confirmed
     subCategories: [
       "Electronics Accessories", // confirmed
@@ -77,6 +85,9 @@ export const CATEGORIES: CategoryConfig[] = [
       "Bluetooth Headphones", // confirmed
       "Watches", // confirmed
       "TV Remote", // confirmed
+      "TV", // added — seeded via seedMissingSubcategories3.ts
+      "Oven", // added — seeded via seedMissingSubcategories3.ts
+      "Ceiling Fan", // added — seeded via seedMissingSubcategories3.ts
       "USB Cables & Chargers", // confirmed
       "Hand Fan", // confirmed
       "Fan Remote", // confirmed
@@ -90,6 +101,10 @@ export const CATEGORIES: CategoryConfig[] = [
     subCategories: [
       "Furniture", // confirmed
       "Dining Table", // confirmed
+      "Sofa", // added — seeded via seedMissingSubcategories3.ts
+      "Beds", // added — seeded via seedMissingSubcategories.ts
+      "Study Table", // added — seeded via seedMissingSubcategories.ts
+      "Wardrobes", // added — seeded via seedMissingSubcategories.ts
     ],
   },
   {
@@ -99,6 +114,7 @@ export const CATEGORIES: CategoryConfig[] = [
       "Fragrance", // confirmed
       "Lipstick", // confirmed
       "Makeup Brush", // confirmed
+      "Skincare", // added — seeded via seedMissingSubcategories.ts
     ],
   },
   {
@@ -113,6 +129,7 @@ export const CATEGORIES: CategoryConfig[] = [
       "Toothbrush", // confirmed
       "Shampoo", // confirmed
       "Soap", // confirmed
+      "Supplements", // added — seeded via seedMissingSubcategories.ts
     ],
   },
   {
@@ -121,6 +138,9 @@ export const CATEGORIES: CategoryConfig[] = [
       "Musical Instruments", // confirmed
       "Toys & Games", // confirmed
       "Gaming Consoles & Accessories", // confirmed
+      "Consoles", // added — seeded via seedMissingSubcategories.ts
+      "Controllers", // added — seeded via seedMissingSubcategories.ts
+      "Gaming Accessories", // added — seeded via seedMissingSubcategories.ts
     ],
   },
   {
@@ -136,21 +156,27 @@ export const CATEGORIES: CategoryConfig[] = [
       "Water Bottles", // confirmed
       "Cooking Vessels", // confirmed
       "Vessel Cleaner", // added — seeded via seedMissingSubcategories2.ts
+      "Cookware", // added — seeded via seedMissingSubcategories.ts
+      "Storage", // added — seeded via seedMissingSubcategories.ts
     ],
   },
   {
     category: "Groceries", // ⚠️ VERIFY — not yet confirmed from aggregation output
     subCategories: [
-      "Pantry", // ⚠️ VERIFY
-      "Snacks", // ⚠️ VERIFY
-      "Beverages", // ⚠️ VERIFY
+      "Pantry", // added — seeded via seedMissingSubcategories.ts
+      "Snacks", // added — seeded via seedMissingSubcategories.ts
+      "Beverages", // added — seeded via seedMissingSubcategories.ts
+      "Biscuits", // confirmed — from original seed.ts, already in DB
+      "Chocolate", // confirmed — from original seed.ts, already in DB
+      "Chips", // confirmed — from original seed.ts, already in DB
     ],
   },
   {
-    category: "Baby", // ⚠️ VERIFY — not yet confirmed from aggregation output
+    category: "Baby", // confirmed — names fixed to match actual seeded data
     subCategories: [
-      "Baby All Items", // ⚠️ VERIFY
-      "Baby Lotion", // ⚠️ VERIFY
+      "Baby Products", // fixed — was "Baby All Items", didn't match DB
+      "Baby Carrier & Stroller", // fixed — was "Baby Lotion", didn't match DB
+      "Baby Bath Tub", // fixed — was missing from filter list
     ],
   },
   {
@@ -158,6 +184,12 @@ export const CATEGORIES: CategoryConfig[] = [
     subCategories: [
       "Bathroom Cleaning", // added — seeded via seedMissingSubcategories2.ts
       "Washing Powder & Detergent", // added — seeded via seedMissingSubcategories2.ts
+      "Curtains & Blinds", // added — already exists in DB, was missing from filter list
+      "Wall Clocks", // added — already exists in DB, was missing from filter list
+      "Photo Frames", // added — already exists in DB, was missing from filter list
+      "Study Table Lamp", // added — already exists in DB, was missing from filter list
+      "Bedsheets & Linen", // added — already exists in DB, was missing from filter list
+      "Cleaning Supplies", // added — already exists in DB, was missing from filter list
     ],
   },
   {
@@ -165,9 +197,32 @@ export const CATEGORIES: CategoryConfig[] = [
     subCategories: [
       "Boys Clothing", // added — seeded via seedMissingSubcategories2.ts
       "Girls Clothing", // added — seeded via seedMissingSubcategories2.ts
+      "Kids Toys", // added — already exists in DB, was missing from filter list
+      "Kids School Bag", // added — already exists in DB, was missing from filter list
+      "Kids Water Bottle", // added — already exists in DB, was missing from filter list
       "Kids Cars and Toys", // ⚠️ VERIFY
       "Kids Study Table", // ⚠️ VERIFY
       "Stationery", // ⚠️ VERIFY
+    ],
+  },
+  {
+    category: "Jewellery", // added — NEW category, wasn't in the old hardcoded list
+    subCategories: [
+      "Earrings", // confirmed — from original seed.ts
+      "Necklace", // confirmed — from original seed.ts
+      "Rings", // confirmed — from original seed.ts
+      "Bangles", // confirmed — from original seed.ts
+    ],
+  },
+  {
+    category: "Health", // added — NEW category, wasn't in the old hardcoded list
+    subCategories: [
+      "Sports", // confirmed — from original seed.ts
+      "Weighing Scale", // confirmed — from original seed.ts
+      "Blood Pressure Monitor", // confirmed — from original seed.ts
+      "Resistance Bands", // confirmed — from original seed.ts
+      "Skipping Rope", // confirmed — from original seed.ts
+      "Protein Supplements", // confirmed — from original seed.ts
     ],
   },
 ];
@@ -210,15 +265,15 @@ export const categoryLabelToDbCategory: Record<
   "Home & Living": { category: "Furniture" }, // confirmed
 
   // beauty campaign
-  Skincare: { category: "Beauty & Makeup" }, // confirmed
+  Skincare: { category: "Beauty & Makeup", subCategory: "Skincare" }, // confirmed
   Makeup: { category: "Beauty & Makeup" }, // confirmed
   Haircare: { category: "Personal Care", subCategory: "Hair Styling Tools" }, // confirmed
   Fragrance: { category: "Beauty & Makeup", subCategory: "Fragrance" }, // confirmed
 
   // fashion campaign
-  Women: { category: "Fashion" }, // confirmed
-  Men: { category: "Fashion" }, // confirmed
-  Kids: { category: "Kids" }, // ⚠️ VERIFY
+  Women: { category: "Fashion", subCategory: "Women's Dress" }, // confirmed
+  Men: { category: "Fashion", subCategory: "Men's Dress" }, // confirmed
+  Kids: { category: "Kids" }, // confirmed
 
   // free-delivery campaign
   FMCG: { category: "Groceries" }, // ⚠️ VERIFY
