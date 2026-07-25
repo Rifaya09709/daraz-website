@@ -13,7 +13,7 @@ import { resolveDbCategory } from "../constants/categories";
 // IMAGES
 // ---------------------------------------------------------------------------
 // No frontend image pooling / placeholder trick anymore. Each product now
-// carries its own real, category-correct image in `product.images` — set
+// carries its own real, category-correct image in `product.images` -- set
 // once via the `seedProductImages.ts` script (Unsplash API, per category).
 // If a product genuinely has no image, we fall back to a plain placeholder
 // so the layout doesn't break.
@@ -75,7 +75,7 @@ const CampaignPage = () => {
     const mapped = resolveDbCategory(slug, selectedCategory);
 
     // No DB category mapped for this chip (promo-only labels like
-    // "Free Delivery", "Live Shopping", "Choice Deals" etc.) — show
+    // "Free Delivery", "Live Shopping", "Choice Deals" etc.) -- show
     // latest products instead of an empty grid.
     const request = mapped?.category
       ? getProductsByCategory(mapped.category, mapped.subCategory, 20)
@@ -102,7 +102,7 @@ const CampaignPage = () => {
     <div className="max-w-2xl mx-auto pb-16 bg-gray-50 min-h-screen">
       <CampaignHeader title={config.pageTitle} />
 
-      {/* Category row — now shown on both phone and laptop (md:hidden removed) */}
+      {/* Category row -- now shown on both phone and laptop (md:hidden removed) */}
       <div className="flex gap-5 overflow-x-auto no-scrollbar px-4 py-5 bg-white">
         {config.categories.map((c) => {
           const Icon = getCategoryIcon(c.label, c.imageKeyword);
@@ -238,6 +238,9 @@ const CampaignPage = () => {
                 )}
               </div>
               <div className="p-2.5">
+                <p className="text-xs text-gray-700 leading-snug line-clamp-2 mb-1 min-h-[2rem]">
+                  {p.name}
+                </p>
                 <p className="text-sm font-semibold text-gray-900">
                   {formatCurrency(getFinalPrice(p))}
                 </p>
