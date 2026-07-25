@@ -41,8 +41,12 @@ export const CATEGORIES: CategoryConfig[] = [
   {
     category: "Fashion", // confirmed (category name only — 20 subCategories exist, list not yet retrieved)
     subCategories: [
-      // ⚠️ VERIFY — Atlas showed "Array (20)" but didn't expand the items.
-      // Click into the Fashion group in Atlas and list all 20 subCategory values here.
+      "Men's Dress", // added — seeded via seedMissingSubcategories2.ts
+      "Women's Dress", // added — seeded via seedMissingSubcategories2.ts
+      "Burkha", // added — seeded via seedMissingSubcategories2.ts
+      "Abhaya", // added — seeded via seedMissingSubcategories2.ts
+      "Travel Bags & Suitcases", // confirmed — visible in Atlas/site already
+      // ⚠️ VERIFY — Atlas showed "Array (20)" total; the rest are still unlisted.
     ],
   },
   {
@@ -131,6 +135,7 @@ export const CATEGORIES: CategoryConfig[] = [
       "Storage Containers", // confirmed
       "Water Bottles", // confirmed
       "Cooking Vessels", // confirmed
+      "Vessel Cleaner", // added — seeded via seedMissingSubcategories2.ts
     ],
   },
   {
@@ -150,11 +155,16 @@ export const CATEGORIES: CategoryConfig[] = [
   },
   {
     category: "Home Essentials", // ⚠️ VERIFY — not yet confirmed from aggregation output
-    subCategories: [], // ⚠️ VERIFY
+    subCategories: [
+      "Bathroom Cleaning", // added — seeded via seedMissingSubcategories2.ts
+      "Washing Powder & Detergent", // added — seeded via seedMissingSubcategories2.ts
+    ],
   },
   {
     category: "Kids", // ⚠️ VERIFY — not yet confirmed from aggregation output
     subCategories: [
+      "Boys Clothing", // added — seeded via seedMissingSubcategories2.ts
+      "Girls Clothing", // added — seeded via seedMissingSubcategories2.ts
       "Kids Cars and Toys", // ⚠️ VERIFY
       "Kids Study Table", // ⚠️ VERIFY
       "Stationery", // ⚠️ VERIFY
