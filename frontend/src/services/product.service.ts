@@ -13,52 +13,52 @@ export interface ProductQuery {
   warranty?: string;
   sort?: string;
 }
+
 // Image-based product search — sends the uploaded image to the backend
 // and returns visually similar products
 export const searchProductsByImage = async (imageFile: File) => {
   const formData = new FormData();
   formData.append("image", imageFile);
 
-  const response = await api.post("/products/search-by-image", formData, {
+  const response = await api.post("/api/products/search-by-image", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
   return response.data;
 };
-
 
 export const getProductsByCategory = async (
   category: string,
   subCategory?: string,
   limit = 20
 ) => {
-  const res = await api.get("/products", {
+  const res = await api.get("/api/products", {
     params: { category, subCategory, limit },
   });
   return res.data; // { success, products, page, totalPages, totalProducts }
 };
 
 export const getProducts = async (params?: ProductQuery) => {
-  const response = await api.get("/products", { params });
+  const response = await api.get("/api/products", { params });
   return response.data;
 };
 
 export const getProductById = async (id: string) => {
-  const response = await api.get(`/products/${id}`);
+  const response = await api.get(`/api/products/${id}`);
   return response.data;
 };
 
 export const getFeaturedProducts = async () => {
-  const response = await api.get("/products/featured");
+  const response = await api.get("/api/products/featured");
   return response.data;
 };
 
 export const getFlashSaleProducts = async () => {
-  const response = await api.get("/products/flash-sale");
+  const response = await api.get("/api/products/flash-sale");
   return response.data;
 };
 
 export const getTrendingProducts = async () => {
-  const response = await api.get("/products/trending");
+  const response = await api.get("/api/products/trending");
   return response.data;
 };
 
@@ -66,33 +66,33 @@ export const getTrendingProducts = async () => {
 // (e.g. 12/20). Pass a number to pull more, e.g. getLatestProducts(100)
 // for the bottom-nav filmstrip.
 export const getLatestProducts = async (limit?: number) => {
-  const response = await api.get("/products/latest", {
+  const response = await api.get("/api/products/latest", {
     params: limit ? { limit } : undefined,
   });
   return response.data;
 };
 
 export const getRelatedProducts = async (id: string) => {
-  const response = await api.get(`/products/related/${id}`);
+  const response = await api.get(`/api/products/related/${id}`);
   return response.data;
 };
 
 export const createProduct = async (formData: FormData) => {
-  const response = await api.post("/products", formData, {
+  const response = await api.post("/api/products", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
   return response.data;
 };
 
 export const updateProduct = async (id: string, formData: FormData) => {
-  const response = await api.put(`/products/${id}`, formData, {
+  const response = await api.put(`/api/products/${id}`, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
   return response.data;
 };
 
 export const deleteProduct = async (id: string) => {
-  const response = await api.delete(`/products/${id}`);
+  const response = await api.delete(`/api/products/${id}`);
   return response.data;
 };
 
@@ -101,7 +101,7 @@ export const addReview = async (
   rating: number,
   comment: string
 ) => {
-  const response = await api.post(`/products/review/${id}`, {
+  const response = await api.post(`/api/products/review/${id}`, {
     rating,
     comment,
   });
