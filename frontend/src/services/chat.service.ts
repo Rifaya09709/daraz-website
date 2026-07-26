@@ -55,34 +55,32 @@ export const disconnectSocket = () => {
 // ===============================
 
 export const startConversation = async (productId: string) => {
-  const response = await api.post("/chat/start", { productId });
+  const response = await api.post("/api/chat/start", { productId });
   return response.data;
 };
 
 export const getMessages = async (conversationId: string) => {
-  const response = await api.get(`/chat/messages/${conversationId}`);
+  const response = await api.get(`/api/chat/messages/${conversationId}`);
   return response.data;
 };
 
 export const getMyConversations = async () => {
-  const response = await api.get("/chat/conversations");
+  const response = await api.get("/api/chat/conversations");
   return response.data;
 };
 
 export const markAsRead = async (conversationId: string) => {
-  const response = await api.put(`/chat/read/${conversationId}`);
+  const response = await api.put(`/api/chat/read/${conversationId}`);
   return response.data;
 };
 
-// REST fallback for sending a message — used automatically if the
-// socket is disconnected, so a message is never silently lost
 export const sendMessageRest = async (conversationId: string, text: string) => {
-  const response = await api.post(`/chat/messages/${conversationId}`, { text });
+  const response = await api.post(`/api/chat/messages/${conversationId}`, { text });
   return response.data;
 };
 
 // ===============================
-// Socket event helpers (primary path — instant delivery)
+// Socket event helpers
 // ===============================
 
 export const joinConversation = (conversationId: string) => {
@@ -93,9 +91,6 @@ export const leaveConversation = (conversationId: string) => {
   socket?.emit("leave_conversation", conversationId);
 };
 
-// Tries the socket first; if it's not connected, falls back to REST so
-// the message still gets delivered (just without the instant push to
-// the other side — they'll see it on next poll/refresh)
 export const sendMessage = async (conversationId: string, text: string) => {
   if (socket?.connected) {
     socket.emit("send_message", { conversationId, text });

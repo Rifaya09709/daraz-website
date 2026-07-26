@@ -8,6 +8,6 @@ export interface ContactFormData {
 }
 
 export const submitContactMessage = async (data: ContactFormData) => {
-  const response = await api.post("/contact", data);
+  const response = await api.post("/api/contact", data);
   return response.data;
 };

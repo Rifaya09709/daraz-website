@@ -1,4 +1,3 @@
-
 import api from "./api";
 
 export interface LoginData {
@@ -14,17 +13,17 @@ export interface RegisterData {
 }
 
 export const login = async (data: LoginData) => {
-  const response = await api.post("/auth/login", data);
+  const response = await api.post("/api/auth/login", data);
   return response.data;
 };
 
 export const register = async (data: RegisterData) => {
-  const response = await api.post("/auth/register", data);
+  const response = await api.post("/api/auth/register", data);
   return response.data;
 };
 
 export const getProfile = async () => {
-  const response = await api.get("/auth/profile");
+  const response = await api.get("/api/auth/profile");
   return response.data;
 };
 
@@ -33,7 +32,7 @@ export const updateProfile = async (data: {
   phone?: string;
   profileImage?: string;
 }) => {
-  const response = await api.put("/auth/profile", data);
+  const response = await api.put("/api/auth/profile", data);
   return response.data;
 };
 
@@ -41,11 +40,11 @@ export const changePassword = async (data: {
   currentPassword: string;
   newPassword: string;
 }) => {
-  const response = await api.put("/auth/change-password", data);
+  const response = await api.put("/api/auth/change-password", data);
   return response.data;
 };
 
 export const logoutApi = async () => {
-  const response = await api.post("/auth/logout");
+  const response = await api.post("/api/auth/logout");
   return response.data;
 };

@@ -1,4 +1,3 @@
-
 import api from "./api";
 
 export interface ShippingAddress {
@@ -17,26 +16,26 @@ export interface PlaceOrderData {
 }
 
 export const placeOrder = async (data: PlaceOrderData) => {
-  const response = await api.post("/orders/place", data);
+  const response = await api.post("/api/orders/place", data);
   return response.data;
 };
 
 export const getMyOrders = async () => {
-  const response = await api.get("/orders/my-orders");
+  const response = await api.get("/api/orders/my-orders");
   return response.data;
 };
 
 export const getOrderById = async (orderId: string) => {
-  const response = await api.get(`/orders/${orderId}`);
+  const response = await api.get(`/api/orders/${orderId}`);
   return response.data;
 };
 
 export const cancelOrder = async (orderId: string) => {
-  const response = await api.put(`/orders/cancel/${orderId}`);
+  const response = await api.put(`/api/orders/cancel/${orderId}`);
   return response.data;
 };
 
 export const trackOrder = async (orderId: string) => {
-  const response = await api.get(`/orders/track/${orderId}`);
+  const response = await api.get(`/api/orders/track/${orderId}`);
   return response.data;
 };

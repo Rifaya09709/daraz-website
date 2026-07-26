@@ -1,21 +1,21 @@
 import api from "./api";
 
 export const getFreebies = async () => {
-  const res = await api.get("/freebies");
+  const res = await api.get("/api/freebies");
   return res.data;
 };
 
 export const getFreebieDetail = async (id: string) => {
-  const res = await api.get(`/freebies/${id}`);
+  const res = await api.get(`/api/freebies/${id}`);
   return res.data;
 };
 
 export const cutFreebiePrice = async (id: string) => {
-  const res = await api.post(`/freebies/${id}/cut`);
+  const res = await api.post(`/api/freebies/${id}/cut`);
   return res.data;
 };
 
 export const claimFreebie = async (id: string) => {
-  const res = await api.post(`/freebies/${id}/claim`);
+  const res = await api.post(`/api/freebies/${id}/claim`);
   return res.data;
 };
