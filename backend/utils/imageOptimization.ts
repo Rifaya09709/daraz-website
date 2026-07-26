@@ -89,7 +89,7 @@ export const generateThumbnail = async (filePath: string): Promise<string> => {
  * Get image URL for API response
  * Converts file path to server URL
  */
-export const getImageUrl = (filePath: string, baseUrl: string = 'http://localhost:5000'): string => {
+export const getImageUrl = (filePath: string, baseUrl: string = 'https://daraz-website-1.onrender.com'): string => {
   if (!filePath) return '';
   
   // If already a URL, return as is
