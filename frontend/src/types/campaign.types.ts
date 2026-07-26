@@ -1,19 +1,19 @@
 export interface CampaignCategory {
   label: string;
-  emoji: string; // kept as a tiny fallback badge, not the main visual anymore
-  imageKeyword: string; // e.g. "clothing", "smartphone" — used to fetch a relevant real photo
-}
-
-export interface CampaignVoucher {
-  discountLabel: string; // e.g. "10% OFF"
-  title: string;
-  minSpend: string; // e.g. "Min. Spend ৳399"
-  validity: string; // e.g. "22/07/2026 - 31/07/2026"
+  emoji: string;
+  imageKeyword: string;
 }
 
 export interface CampaignStep {
   title: string;
   description: string;
+}
+
+export interface CampaignVoucher {
+  discountLabel: string;
+  title: string;
+  minSpend: string;
+  validity: string;
 }
 
 export interface CampaignProduct {
@@ -22,21 +22,20 @@ export interface CampaignProduct {
   image: string;
   price: number;
   originalPrice?: number;
-  tag?: string; // e.g. "FREE DELIVERY", "PAYDAY SALE"
+  tag?: string;
 }
-
-export type CampaignLayout = "shipping" | "deals";
 
 export interface CampaignConfig {
   slug: string;
-  layout: CampaignLayout;
+  layout: "shipping" | "deals";
   pageTitle: string;
-  themeColor: string; // tailwind color name, e.g. "emerald", "amber"
+  themeColor: string;
   heroHeadline: string;
   heroSubtext: string;
+  heroImage?: string;
   categories: CampaignCategory[];
+  steps?: CampaignStep[];
   voucher?: CampaignVoucher;
-  steps?: CampaignStep[]; // used by "shipping" layout
-  tabs?: string[]; // used by "deals" layout
+  tabs?: string[];
   products: CampaignProduct[];
 }

@@ -1,7 +1,8 @@
-// src/pages/campaigns/BeautyPage.tsx
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "@/lib/api";
+import { CATEGORIES, SUBCATEGORIES } from "@/config/categories";
+import { campaigns } from "@/data/campaigns.data";
 
 interface Product {
   _id: string;
@@ -15,12 +16,7 @@ interface Product {
   subCategory?: string;
 }
 
-// Sub-category chips shown under each section heading.
-// These map to your real DB subCategory strings under "Health & Beauty".
-const MAKEUP_CHIPS = ["Makeup", "Makeup", "Makeup", "Makeup"]; // same subCategory in your seed, split by product content
-const SKINCARE_CHIPS = ["Bath & Body", "Personal Care"];
-const HAIRCARE_CHIPS = ["Hair Care"];
-const BODYCARE_CHIPS = ["Bath & Body", "Personal Care"];
+const heroImage = campaigns.beauty.heroImage;
 
 const ProductCard = ({ p }: { p: Product }) => (
   <Link
@@ -116,16 +112,16 @@ const BeautyPage = () => {
 
         const [makeupRes, skincareRes, haircareRes, bodycareRes] = await Promise.all([
           api.get("/api/products", {
-            params: { category: "Health & Beauty", subCategory: "Makeup", limit: 20 },
+            params: { category: CATEGORIES.HEALTH_BEAUTY, subCategory: SUBCATEGORIES.MAKEUP, limit: 20 },
           }),
           api.get("/api/products", {
-            params: { category: "Health & Beauty", subCategory: "Bath & Body", limit: 20 },
+            params: { category: CATEGORIES.HEALTH_BEAUTY, subCategory: SUBCATEGORIES.BATH_BODY, limit: 20 },
           }),
           api.get("/api/products", {
-            params: { category: "Health & Beauty", subCategory: "Hair Care", limit: 20 },
+            params: { category: CATEGORIES.HEALTH_BEAUTY, subCategory: SUBCATEGORIES.HAIR_CARE, limit: 20 },
           }),
           api.get("/api/products", {
-            params: { category: "Health & Beauty", subCategory: "Personal Care", limit: 20 },
+            params: { category: CATEGORIES.HEALTH_BEAUTY, subCategory: SUBCATEGORIES.PERSONAL_CARE, limit: 20 },
           }),
         ]);
 
@@ -146,17 +142,27 @@ const BeautyPage = () => {
   return (
     <div className="max-w-md mx-auto bg-white min-h-screen pb-10">
       {/* Hero banner */}
-      <div className="relative bg-gradient-to-r from-rose-100 to-pink-50 p-4 overflow-hidden">
-        <div className="flex items-center gap-2">
-          <Link to="/" className="text-2xl leading-none">‹</Link>
+      <div className="relative bg-gradient-to-r from-rose-100 to-pink-50 p-4 overflow-hidden min-h-[160px]">
+        <img
+          src={heroImage}
+          alt="Beauty"
+          className="absolute inset-0 w-full h-full object-cover opacity-30"
+          onError={(e) => {
+            (e.target as HTMLImageElement).style.display = "none";
+          }}
+        />
+        <div className="relative z-10">
+          <div className="flex items-center gap-2">
+            <Link to="/" className="text-2xl leading-none">‹</Link>
+          </div>
+          <p className="text-3xl font-black text-rose-700 mt-2 leading-tight drop-shadow-sm">
+            RADIANCE REVIVAL
+          </p>
+          <span className="inline-block mt-1 bg-yellow-300 text-gray-900 text-xs font-bold px-2 py-1 rounded-full">
+            UP TO 60% OFF
+          </span>
+          <p className="text-rose-600 font-medium mt-1">Glow like spring</p>
         </div>
-        <p className="text-3xl font-black text-rose-700 mt-2 leading-tight">
-          RADIANCE REVIVAL
-        </p>
-        <span className="inline-block mt-1 bg-yellow-300 text-gray-900 text-xs font-bold px-2 py-1 rounded-full">
-          UP TO 60% OFF
-        </span>
-        <p className="text-rose-600 font-medium mt-1">Glow like spring</p>
       </div>
 
       {error && <p className="text-center text-sm text-red-500 py-4">{error}</p>}
@@ -168,7 +174,7 @@ const BeautyPage = () => {
           (label) => (
             <Link
               key={label}
-              to={`/search?subCategory=Makeup&q=${encodeURIComponent(label)}`}
+              to={`/search?subCategory=${encodeURIComponent(SUBCATEGORIES.MAKEUP)}&q=${encodeURIComponent(label)}`}
               className="flex flex-col items-center gap-1.5 shrink-0"
             >
               <span className="w-14 h-14 rounded-full bg-pink-100 flex items-center justify-center text-[10px] font-bold text-rose-600 text-center px-1">
@@ -189,7 +195,7 @@ const BeautyPage = () => {
         {["Facewash", "Creams & moisturizers", "Face mask & packs", "Lip balms"].map((label) => (
           <Link
             key={label}
-            to={`/search?subCategory=Personal Care&q=${encodeURIComponent(label)}`}
+            to={`/search?subCategory=${encodeURIComponent(SUBCATEGORIES.PERSONAL_CARE)}&q=${encodeURIComponent(label)}`}
             className="flex flex-col items-center gap-1.5 shrink-0"
           >
             <span className="w-14 h-14 rounded-full bg-pink-100 flex items-center justify-center text-[10px] font-bold text-rose-600 text-center px-1">
@@ -230,7 +236,7 @@ const BeautyPage = () => {
           (label) => (
             <Link
               key={label}
-              to={`/search?subCategory=Hair Care&q=${encodeURIComponent(label)}`}
+              to={`/search?subCategory=${encodeURIComponent(SUBCATEGORIES.HAIR_CARE)}&q=${encodeURIComponent(label)}`}
               className="flex flex-col items-center gap-1.5 shrink-0"
             >
               <span className="w-14 h-14 rounded-full bg-pink-100 flex items-center justify-center text-[10px] font-bold text-rose-600 text-center px-1">
@@ -267,7 +273,7 @@ const BeautyPage = () => {
         {["Soap", "Shower gel", "Lotion", "Hair Removal"].map((label) => (
           <Link
             key={label}
-            to={`/search?subCategory=Bath & Body&q=${encodeURIComponent(label)}`}
+            to={`/search?subCategory=${encodeURIComponent(SUBCATEGORIES.BATH_BODY)}&q=${encodeURIComponent(label)}`}
             className="flex flex-col items-center gap-1.5 shrink-0"
           >
             <span className="w-14 h-14 rounded-full bg-pink-100 flex items-center justify-center text-[10px] font-bold text-rose-600 text-center px-1">

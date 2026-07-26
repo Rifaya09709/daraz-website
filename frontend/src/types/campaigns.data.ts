@@ -1,4 +1,4 @@
-import { CampaignConfig } from "../types/campaign.types"; // adjust path if needed
+import { CampaignConfig } from "../types/campaign.types";
 
 export const campaigns: Record<string, CampaignConfig> = {
   "free-delivery": {
@@ -8,6 +8,7 @@ export const campaigns: Record<string, CampaignConfig> = {
     themeColor: "emerald",
     heroHeadline: "Collect & Get ৳110 off on Delivery",
     heroSubtext: "Stack delivery vouchers and shop with zero shipping cost",
+    heroImage: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1200&h=400&fit=crop",
     categories: [
       { label: "Free Delivery", emoji: "🚚", imageKeyword: "delivery,truck" },
       { label: "Fashion", emoji: "👕", imageKeyword: "fashion,clothing" },
@@ -20,11 +21,7 @@ export const campaigns: Record<string, CampaignConfig> = {
       { title: "Look for the Free Delivery label", description: "Tagged products ship at zero cost" },
       { title: "Checkout automatically", description: "Discount applies at checkout — no code needed" },
     ],
-    products: [
-      { id: "fd1", name: "Matte Lip Crayon", image: "/images/lip-crayon.jpg", price: 149, tag: "FREE DELIVERY" },
-      { id: "fd2", name: "Custom Name Keychain", image: "/images/keychain.jpg", price: 199, tag: "FREE DELIVERY" },
-      { id: "fd3", name: "Microfiber Cloth Set", image: "/images/cloth.jpg", price: 89, tag: "FREE DELIVERY" },
-    ],
+    products: [],
   },
 
   "low-price": {
@@ -34,6 +31,7 @@ export const campaigns: Record<string, CampaignConfig> = {
     themeColor: "amber",
     heroHeadline: "Everyday Low Price",
     heroSubtext: "The essentials you buy every month, always at the lowest price",
+    heroImage: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200&h=400&fit=crop",
     categories: [
       { label: "Kitchen & Dining", emoji: "🍳", imageKeyword: "kitchen,cookware" },
       { label: "Tools, DIY & Outdoor", emoji: "🧰", imageKeyword: "tools,hardware" },
@@ -47,11 +45,7 @@ export const campaigns: Record<string, CampaignConfig> = {
       validity: "22/07/2026 – 31/07/2026",
     },
     tabs: ["Hot Deals", "Groceries", "Health & Beauty", "Tk.99"],
-    products: [
-      { id: "lp1", name: "Baby Wet Wipes 120pcs", image: "/images/wipes.jpg", price: 99, originalPrice: 149, tag: "FREE DELIVERY" },
-      { id: "lp2", name: "Hair Care Bundle", image: "/images/haircare.jpg", price: 249, originalPrice: 349, tag: "FREE DELIVERY" },
-      { id: "lp3", name: "Non-stick Cookware Set", image: "/images/cookware.jpg", price: 799, originalPrice: 1299 },
-    ],
+    products: [],
   },
 
   freebies: {
@@ -61,6 +55,7 @@ export const campaigns: Record<string, CampaignConfig> = {
     themeColor: "rose",
     heroHeadline: "Play, Invite & Win Free Gifts",
     heroSubtext: "Free samples, mystery gifts and giveaways — refreshed daily",
+    heroImage: "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?w=1200&h=400&fit=crop",
     categories: [
       { label: "Mystery Gifts", emoji: "🎁", imageKeyword: "gift,box" },
       { label: "Free Samples", emoji: "🧪", imageKeyword: "cosmetics,sample" },
@@ -68,10 +63,7 @@ export const campaigns: Record<string, CampaignConfig> = {
       { label: "Invite & Earn", emoji: "🤝", imageKeyword: "friends,invite" },
     ],
     tabs: ["Free Now", "Ending Soon", "Won by Others"],
-    products: [
-      { id: "fr1", name: "Sample Perfume Vial", image: "/images/perfume-sample.jpg", price: 0, tag: "FREE" },
-      { id: "fr2", name: "Mini Skincare Set", image: "/images/skincare-mini.jpg", price: 0, tag: "FREE" },
-    ],
+    products: [],
   },
 
   mobiles: {
@@ -81,6 +73,7 @@ export const campaigns: Record<string, CampaignConfig> = {
     themeColor: "indigo",
     heroHeadline: "100% Authentic. Official Warranty.",
     heroSubtext: "Flagship phones, accessories and trade-in deals",
+    heroImage: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=1200&h=400&fit=crop",
     categories: [
       { label: "Smartphones", emoji: "📱", imageKeyword: "smartphone,mobile" },
       { label: "Accessories", emoji: "🎧", imageKeyword: "headphones,accessories" },
@@ -94,10 +87,7 @@ export const campaigns: Record<string, CampaignConfig> = {
       validity: "22/07/2026 – 31/07/2026",
     },
     tabs: ["Best Sellers", "Under ৳15,000", "Trade-In Offers"],
-    products: [
-      { id: "mb1", name: "AMOLED Smartphone 128GB", image: "/images/phone1.jpg", price: 18999, originalPrice: 21999 },
-      { id: "mb2", name: "Wireless Earbuds", image: "/images/earbuds.jpg", price: 1499, originalPrice: 2499 },
-    ],
+    products: [],
   },
 
   mall: {
@@ -107,6 +97,7 @@ export const campaigns: Record<string, CampaignConfig> = {
     themeColor: "violet",
     heroHeadline: "100% Genuine Brands, Verified Sellers",
     heroSubtext: "Shop official brand stores with easy returns",
+    heroImage: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&h=400&fit=crop",
     categories: [
       { label: "Electronics", emoji: "💻", imageKeyword: "laptop,electronics" },
       { label: "Fashion", emoji: "👗", imageKeyword: "dress,fashion" },
@@ -114,10 +105,7 @@ export const campaigns: Record<string, CampaignConfig> = {
       { label: "Home & Living", emoji: "🏠", imageKeyword: "home,decor" },
     ],
     tabs: ["Featured Brands", "New In Mall", "Mall Exclusive"],
-    products: [
-      { id: "ml1", name: "Brand Running Shoes", image: "/images/shoes.jpg", price: 3499, originalPrice: 4999 },
-      { id: "ml2", name: "Ceramic Cookware Set", image: "/images/cookware2.jpg", price: 2199, originalPrice: 2999 },
-    ],
+    products: [],
   },
 
   beauty: {
@@ -127,6 +115,7 @@ export const campaigns: Record<string, CampaignConfig> = {
     themeColor: "pink",
     heroHeadline: "Your Everyday Beauty Edit",
     heroSubtext: "Skincare, makeup and fragrance picks curated for you",
+    heroImage: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1200&h=400&fit=crop",
     categories: [
       { label: "Skincare", emoji: "🧴", imageKeyword: "skincare,serum" },
       { label: "Makeup", emoji: "💋", imageKeyword: "makeup,lipstick" },
@@ -140,10 +129,7 @@ export const campaigns: Record<string, CampaignConfig> = {
       validity: "22/07/2026 – 31/07/2026",
     },
     tabs: ["Bestsellers", "K-Beauty", "Under ৳300"],
-    products: [
-      { id: "bt1", name: "Vitamin C Serum", image: "/images/serum.jpg", price: 349, originalPrice: 599 },
-      { id: "bt2", name: "Matte Lipstick Set", image: "/images/lipstick.jpg", price: 299, originalPrice: 450 },
-    ],
+    products: [],
   },
 
   "new-arrivals": {
@@ -153,6 +139,7 @@ export const campaigns: Record<string, CampaignConfig> = {
     themeColor: "sky",
     heroHeadline: "Fresh Drops, Every Week",
     heroSubtext: "Be the first to shop what just landed",
+    heroImage: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&h=400&fit=crop",
     categories: [
       { label: "This Week", emoji: "🆕", imageKeyword: "new,arrival" },
       { label: "Fashion", emoji: "👕", imageKeyword: "clothing,fashion" },
@@ -164,10 +151,7 @@ export const campaigns: Record<string, CampaignConfig> = {
       { title: "Save to your wishlist", description: "Keep track of what you don't want to miss" },
       { title: "Grab early-bird pricing", description: "First 48 hours often carry launch discounts" },
     ],
-    products: [
-      { id: "na1", name: "Retro Sunglasses", image: "/images/sunglasses.jpg", price: 599, tag: "NEW" },
-      { id: "na2", name: "Desk Lamp", image: "/images/lamp.jpg", price: 899, tag: "NEW" },
-    ],
+    products: [],
   },
 
   fashion: {
@@ -177,6 +161,7 @@ export const campaigns: Record<string, CampaignConfig> = {
     themeColor: "lime",
     heroHeadline: "Style For Every Look",
     heroSubtext: "Curated outfits and trending fashion, in one place",
+    heroImage: "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1200&h=400&fit=crop",
     categories: [
       { label: "Women", emoji: "👗", imageKeyword: "women,dress" },
       { label: "Men", emoji: "👔", imageKeyword: "men,shirt" },
@@ -184,10 +169,7 @@ export const campaigns: Record<string, CampaignConfig> = {
       { label: "Accessories", emoji: "👜", imageKeyword: "handbag,accessories" },
     ],
     tabs: ["Trending", "New In", "Under ৳999"],
-    products: [
-      { id: "fs1", name: "Oversized Cotton Tee", image: "/images/tee.jpg", price: 449, originalPrice: 699 },
-      { id: "fs2", name: "Denim Jacket", image: "/images/jacket.jpg", price: 1299, originalPrice: 1899 },
-    ],
+    products: [],
   },
 
   channels: {
@@ -197,6 +179,7 @@ export const campaigns: Record<string, CampaignConfig> = {
     themeColor: "slate",
     heroHeadline: "Explore Every Way to Shop",
     heroSubtext: "Live sales, auctions, flash deals and group buys",
+    heroImage: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=1200&h=400&fit=crop",
     categories: [
       { label: "Live Shopping", emoji: "🔴", imageKeyword: "livestream,shopping" },
       { label: "Auctions", emoji: "🔨", imageKeyword: "auction,gavel" },
@@ -204,9 +187,6 @@ export const campaigns: Record<string, CampaignConfig> = {
       { label: "Group Buy", emoji: "👥", imageKeyword: "group,people" },
     ],
     tabs: ["Live Now", "Starting Soon", "Popular"],
-    products: [
-      { id: "ch1", name: "Group Buy: Air Fryer", image: "/images/airfryer.jpg", price: 2499, originalPrice: 3999, tag: "GROUP BUY" },
-      { id: "ch2", name: "Auction: Vintage Watch", image: "/images/watch.jpg", price: 1200, tag: "BIDDING" },
-    ],
+    products: [],
   },
 };
