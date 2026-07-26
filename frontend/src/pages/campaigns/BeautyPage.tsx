@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "@/lib/api";
 import { CATEGORIES, SUBCATEGORIES } from "@/config/categories";
-import { campaigns } from "@/types/campaigns.data";
+import { campaigns } from "@/data/campaigns.data";
 
 interface Product {
   _id: string;
