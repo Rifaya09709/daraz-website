@@ -14,7 +14,7 @@ import Profile from "../pages/Profile";
 import MessagesPage from "../pages/MessagesPage";
 import ChatsPage from "../pages/ChatsPage";
 import ActivitiesPage from "../pages/ActivitiesPage";
-import CampaignPage from "../pages/CampaignPage";
+
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import NotFound from "../pages/NotFound";
@@ -40,6 +40,16 @@ import Reviews from "../pages/Reviews";
 import PaymentOptions from "../pages/PaymentOptions";
 import FreeDeliveryPage from "../pages/campaigns/FreeDeliveryPage";
 import LowPricePage from "../pages/campaigns/LowPricePage";
+import MallPage from "../pages/campaigns/MallPage";
+import BeautyPage from "../pages/campaigns/BeautyPage";
+import NewArrivalsPage from "../pages/campaigns/NewArrivalsPage";
+import DarazLookPage from "../pages/campaigns/DarazLookPage";
+import BuyMoreSaveMorePage from "../pages/campaigns/BuyMoreSaveMorePage";
+
+
+
+
+
 
 import Header from "../components/layout/Header";
 import Footer from "../components/layout/Footer";
@@ -81,6 +91,19 @@ const AppRoutes = () => {
         <Route path="/messages/promos" element={<PromosPage />} />
         <Route path="/campaign/free-delivery" element={<FreeDeliveryPage />} />
         <Route path="/campaign/low-price" element={<LowPricePage />} />
+        <Route path="/campaign/mall" element={<MallPage />} />
+        <Route path="/campaign/beauty" element={<BeautyPage />} />
+        <Route path="/campaign/new-arrivals" element={<NewArrivalsPage />} />
+        <Route path="/campaign/fashion" element={<DarazLookPage />} />
+        <Route path="/campaign/buy-more-save-more" element={<BuyMoreSaveMorePage />} />
+
+
+
+
+
+
+
+
             <Route path="/campaign/mobiles" element={<OfficialMobilePage />} />
         <Route path="/channelsPage" element={<ChannelsPage />} />
         <Route path="/channels" element={<Channels />} />
