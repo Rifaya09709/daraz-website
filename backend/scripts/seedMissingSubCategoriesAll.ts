@@ -1417,6 +1417,18 @@ const fetchPhotos = async (query: string, retries = 2): Promise<{ url: string; a
     });
 
     const results = response.data.results;
+
+    // Query specific-ah results illainna, generic fallback query try pannunga
+    if (results.length === 0) {
+      const fallbackQuery = query.split(" ").slice(0, 2).join(" "); // first 2 words mattum
+      console.log(`  ⚠️ No results for "${query}", trying fallback: "${fallbackQuery}"`);
+      const fallbackRes = await axios.get(`${UNSPLASH_BASE_URL}/search/photos`, {
+        params: { query: fallbackQuery, per_page: 30, page: 1 },
+        headers: { Authorization: `Client-ID ${process.env.UNSPLASH_ACCESS_KEY}` },
+      });
+      results.push(...fallbackRes.data.results);
+    }
+
     const seen = new Set<string>();
     const uniquePhotos = results.filter((photo: any) => {
       if (seen.has(photo.id)) return false;
@@ -1429,17 +1441,24 @@ const fetchPhotos = async (query: string, retries = 2): Promise<{ url: string; a
       alt: photo.alt_description || query,
     }));
   } catch (err: any) {
+    const status = err.response?.status;
     const isRateLimited =
-      err.response?.status === 403 ||
-      /rate limit/i.test(err.response?.data?.errors?.[0] || "");
+      status === 403 || /rate limit/i.test(err.response?.data?.errors?.[0] || "");
+
+    // Rate limit headers check pannunga — remaining count log pannunga
+    const remaining = err.response?.headers?.["x-ratelimit-remaining"];
+    if (remaining !== undefined) {
+      console.log(`  📊 Unsplash requests remaining: ${remaining}`);
+    }
 
     if (isRateLimited && retries > 0) {
-      const waitMs = 5000 * (3 - retries);
+      const waitMs = 10000 * (3 - retries); // wait time increase pannirukom (10s, 20s)
       console.log(`  ⏳ Rate limited, waiting ${waitMs / 1000}s before retry...`);
       await sleep(waitMs);
       return fetchPhotos(query, retries - 1);
     }
 
+    console.error(`  ❌ Photo fetch failed for "${query}" (status: ${status})`);
     throw err;
   }
 };
