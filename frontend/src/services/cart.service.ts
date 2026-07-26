@@ -1,50 +1,31 @@
 import api from "./api";
 
-export interface LoginData {
-  email: string;
-  password: string;
-}
-
-export interface RegisterData {
-  name: string;
-  email: string;
-  phone: string;
-  password: string;
-}
-
-export const login = async (data: LoginData) => {
-  const response = await api.post("/api/auth/login", data);
+export const getCart = async () => {
+  const response = await api.get("/api/cart");
   return response.data;
 };
 
-export const register = async (data: RegisterData) => {
-  const response = await api.post("/api/auth/register", data);
+export const addToCart = async (productId: string, quantity: number) => {
+  const response = await api.post("/api/cart/add", { productId, quantity });
   return response.data;
 };
 
-export const getProfile = async () => {
-  const response = await api.get("/api/auth/profile");
+export const updateCart = async (productId: string, quantity: number) => {
+  const response = await api.put(`/api/cart/update/${productId}`, { quantity });
   return response.data;
 };
 
-export const updateProfile = async (data: {
-  name?: string;
-  phone?: string;
-  profileImage?: string;
-}) => {
-  const response = await api.put("/api/auth/profile", data);
+export const removeCartItem = async (productId: string) => {
+  const response = await api.delete(`/api/cart/remove/${productId}`);
   return response.data;
 };
 
-export const changePassword = async (data: {
-  currentPassword: string;
-  newPassword: string;
-}) => {
-  const response = await api.put("/api/auth/change-password", data);
+export const clearCart = async () => {
+  const response = await api.delete("/api/cart/clear");
   return response.data;
 };
 
-export const logoutApi = async () => {
-  const response = await api.post("/api/auth/logout");
+export const applyCoupon = async (couponCode: string) => {
+  const response = await api.post("/api/cart/coupon", { couponCode });
   return response.data;
 };
